@@ -49,7 +49,7 @@ def serial_read_data(ser):
             return -1
     return 0
 
-soil_temperature =[1, 3, 0, 6, 0, 1, 100, 11]
+soil_temperature = [1, 3, 0, 6, 0, 1, 100, 11]
 def readTemperature():
     print (f"First read")
     serial_read_data(ser)
@@ -66,7 +66,7 @@ def readMoisture():
     print (f'After write')
     time.sleep(1)
     return serial_read_data(ser)
-
+#test
 while True:
     print("TEST SENSOR")
     print(f'The value of moisture is {readMoisture()}')
