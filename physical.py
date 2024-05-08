@@ -20,21 +20,34 @@ print(portName)
 if portName != "None":
     ser = serial.Serial(port=portName, baudrate=9600)
 
-relay1_ON  = [0, 6, 0, 0, 0, 255, 200, 91]
-relay1_OFF = [0, 6, 0, 0, 0, 0, 136, 27]
-def setDevice1(state):
-    if state == True:
-        ser.write(relay1_ON)
-    else:
-        ser.write(relay1_OFF)
-relay2_ON  = [15, 6, 0, 0, 0, 255, 200, 164]
-relay2_OFF = [15, 6, 0, 0, 0, 0, 136, 228]
-def setDevice2(state):
-    if state == True:
-        ser.write(relay2_ON)
-    else:
-        ser.write(relay2_OFF)
-        
+# def compute_crc(data):
+#     crc = 0xFFFF
+#     for byte in data:
+#         crc ^= byte
+#         for _ in range(8):
+#             lsb = crc & 1
+#             crc >>= 1
+#             if lsb:
+#                 crc ^= 0xA001
+#     return crc
+
+# def correct_crc(array):
+#     data = array[:-2]
+#     high, low = array[-2:]
+
+#     crc = compute_crc(data)
+#     crc_low = (crc >> 8) & 0xFF
+#     crc_high = crc & 0xFF
+    
+
+#     if (crc_high == high and 
+#         crc_low == low):
+#         return array
+#     else:
+
+#         array_chuan = array[:-2] + [crc_high, crc_low]
+#         return array_chuan
+     
 def serial_read_data(ser):
     bytesToRead = ser.inWaiting()
     if bytesToRead > 0:
@@ -67,6 +80,84 @@ def readMoisture():
     time.sleep(1)
     return serial_read_data(ser)
 #test
+
+mixer1_ON  = [1, 5, 0, 0, 255, 0, 140, 58]
+mixer1_OFF = [1, 5, 0, 0, 0, 0, 205, 202]
+
+mixer2_ON  = [2, 5, 0, 0, 255, 0, 221, 250]
+mixer2_OFF = [2, 5, 0, 0, 0, 0, 156, 10]
+
+mixer3_ON  = [3, 5, 0, 0, 255, 0, 45, 250]
+mixer3_OFF = [3, 5, 0, 0, 0, 0, 124, 10]
+
+selector1_ON  = [4, 5, 0, 0, 255, 0, 108, 15]
+selector1_OFF = [4, 5, 0, 0, 0, 0, 61, 207]
+
+selector2_ON  = [5, 5, 0, 0, 255, 0, 61, 207]
+selector2_OFF = [5, 5, 0, 0, 0, 0, 108, 15]
+
+selector3_ON  = [6, 5, 0, 0, 255, 0, 13, 223]
+selector3_OFF = [6, 5, 0, 0, 0, 0, 134, 103]
+
+pumpin_ON  = [7, 5, 0, 0, 255, 0, 180, 7]
+pumpin_OFF = [7, 5, 0, 0, 0, 0, 81, 195]
+
+pumpout_ON  = [8, 5, 0, 0, 255, 0, 149, 159]
+pumpout_OFF = [8, 5, 0, 0, 0, 0, 240, 47]
+
+
+def setDevice1(state):
+    if state == True:
+        ser.write(mixer1_ON)
+    else:
+        ser.write(mixer1_OFF)
+
+def setDevice2(state):
+    if state == True:
+        ser.write(mixer2_ON)
+    else:
+        ser.write(mixer2_OFF)        
+
+def setDevice3(state):
+    if state == True:
+        ser.write(mixer3_ON)
+    else:
+        ser.write(mixer3_OFF)
+
+def setDevice4(state):
+    if state == True:
+        ser.write(selector1_ON)
+    else:
+        ser.write(selector1_OFF)
+
+def setDevice5(state):
+    if state == True:
+        ser.write(selector2_ON)
+    else:
+        ser.write(selector2_OFF)
+
+def setDevice6(state):
+    if state == True:
+        ser.write(selector3_ON)
+    else:
+        ser.write(selector3_OFF)
+
+def setDevice7(state):
+    if state == True:
+        ser.write(pumpin_ON)
+    else:
+        ser.write(pumpin_OFF)
+
+def setDevice8(state):
+    if state == True:
+        ser.write(pumpout_ON)
+    else:
+        ser.write(pumpout_OFF)
+        
+
+
+
+
 while True:
     print("TEST SENSOR")
     print(f'The value of moisture is {readMoisture()}')

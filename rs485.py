@@ -18,9 +18,7 @@ def getPort():
 
 portName = "/dev/ttyUSB1"
 print(portName)
-
-
-
+    
 try:
     ser = serial.Serial(port=portName, baudrate=115200)
     print("Open successfully")
