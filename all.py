@@ -1,8 +1,15 @@
 
 import time
 import threading
-from scheduler import *
+
+
 #Define the state of the cycle
+
+
+#import cac file khac
+from scheduler import *
+from cnn_ai import *
+
 
 INIT = 0
 MIX1 = 1
