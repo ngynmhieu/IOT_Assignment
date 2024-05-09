@@ -1,7 +1,7 @@
 
 import time
-
-
+import threading
+from scheduler import *
 #Define the state of the cycle
 
 INIT = 0
