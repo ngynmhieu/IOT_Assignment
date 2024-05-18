@@ -74,7 +74,7 @@ def readTemperature():
 soil_moisture = [1, 3, 0, 7, 0, 1, 53, 203]
 def readMoisture():
     print (f'First read moisture')
-    serial_read_data(ser)
+    # serial_read_data(ser)
     ser.write(soil_moisture)
     print (f'After write')
     time.sleep(1)
