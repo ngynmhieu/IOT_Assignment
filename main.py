@@ -9,7 +9,7 @@ import random
 
 AIO_FEED_IDs = ["Command"]
 AIO_USERNAME = "IOT_232"
-AIO_KEY = "aio_NnXj57IjVxjGzPNu5ds37JdAQ7pz"    
+AIO_KEY = ""    
 
 cycle = None
 flow1 = None
