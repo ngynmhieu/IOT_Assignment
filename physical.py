@@ -105,7 +105,7 @@ pumpin_OFF = [7, 5, 0, 0, 0, 0, 81, 195]
 pumpout_ON  = [8, 5, 0, 0, 255, 0, 149, 159]
 pumpout_OFF = [8, 5, 0, 0, 0, 0, 240, 47]
 
-
+#Hieu
 def setDevice1(state):
     if state == True:
         ser.write(mixer1_ON)
