@@ -5,7 +5,7 @@ status = INIT
 start_time = 0
 end_time = 0
 
-def fsm_auto():
+def fsm_auto(flow1, flow2, flow3, area):
     if (status == INIT):
         start_time = time.time()
         status = MIX1

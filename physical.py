@@ -158,9 +158,3 @@ def setDevice8(state):
 
 
 
-while True:
-    print("TEST SENSOR")
-    print(f'The value of moisture is {readMoisture()}')
-    time.sleep(1)
-    print(f'The value of temp is {readTemperature()}')
-    time.sleep(1)
