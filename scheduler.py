@@ -82,7 +82,7 @@ def SCH_Delete_Task (worker_id):
 
 def SCH_Dispatch_Tasks():
     while company.head.delay == 0 and company.number != 0:
-        print (f'TaskID {company.head.worker_id} is running at {time_stamp}')
+        # print (f'TaskID {company.head.worker_id} is running at {time_stamp}')
         company.head.func() # Run worker
         if company.head.period != 0: # periodly worker
             SCH_Add_Task(company.head.func, company.head.period, company.head.period)

@@ -8,7 +8,7 @@ import threading
 
 #import cac file khac
 from scheduler import *
-# from cnn_ai import *
+from cnn_ai import *
 
 
 INIT = 0

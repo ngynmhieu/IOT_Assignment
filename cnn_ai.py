@@ -53,9 +53,9 @@ def update_input(a, b, c, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out):
     return in_seq1, in_seq2, out_seq, x_input, X, y
 
 # define input sequence
-def prepare_cnn_model():
-    in_seq1 = array([10, 20, 30, 40, 50, 60, 70, 80, 90])
-    in_seq2 = array([15, 25, 35, 45, 55, 65, 75, 85, 95])
+def prepare_cnn_model(temp_value, moisture_value):
+    in_seq1 = np.repeat(temp_value, 10)
+    in_seq2 = np.repeat(moisture_value, 10)
     out_seq = array([in_seq1[i]+in_seq2[i] for i in range(len(in_seq1))])
     model = Sequential()
     # convert to [rows, columns] structure
@@ -82,14 +82,19 @@ def prepare_cnn_model():
     model.add(Dense(n_output))
     model.compile(optimizer='adam', loss='mse')
     # fit model
+    # print (f'\nin_seq1: {in_seq1}')
+    # print (f'\nin_seq2: {in_seq2}')
     return model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features
     # demonstrate prediction
 def predict_value(temp, mois, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features):
     in_seq1, in_seq2, out_seq, x_input, X, y = update_input(temp,mois,temp+mois,in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out)
     
     model.fit(X, y, epochs=100, verbose=0)
-    print (f'x_input: {x_input}')
     x_input = x_input.reshape((1, n_steps_in, n_features))
     result = model.predict(x_input, verbose=0)
     print (f'Result: {result}')
-    return result[0,0], result[0,1]
+    print (f'In_seq1: {in_seq1}')
+    print (f'In_seq2: {in_seq2}')
+    
+
+    return result[0,0], result[0,1], model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features

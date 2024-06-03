@@ -6,11 +6,15 @@ import json
 # from Adafruit_IO import MQTTClient
 import time
 import random
+import threading
 
 AIO_FEED_IDs = ["Command"]
 AIO_USERNAME = "IOT_232"
 AIO_KEY = ""    
 
+
+temp_value = 0
+moisture_value = 0
 
 
 
@@ -25,10 +29,16 @@ stopTime = None
 
 sendPredict_flag = False
 runCommand_flag = False
+Predict_lock = threading.Lock()
 
-temp_value = 0
-moisture_value = 0
 
+in_seq1 = array([0, 0, 0, 0, 0, 0, 0, 0, 0])
+in_seq2 = array([0, 0, 0, 0, 0, 0, 0, 0, 0])
+out_seq = array([in_seq1[i]+in_seq2[i] for i in range(len(in_seq1))])
+model = Sequential()
+n_steps_in = 0
+n_steps_out= 0 
+n_features = 0
 
 # def connected(client):
 #     print("Ket noi thanh cong ...")
@@ -94,35 +104,46 @@ threading.Timer(1.0, timer_callback).start()
 
 # temp = 20
 # mois = 50
-# model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = prepare_cnn_model()
-# while True:
-#     predict_temp, predict_mois = predict_value(temp, mois, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features)
-#     print (f'Predicted temp: {predict_temp}, Predicted mois: {predict_mois}')
-#     temp+= 5
-#     mois += 5
-#     time.sleep(2)
+
+
     
+
 
 
 # MAIN 
 def listenSensor():
     global temp_value, moisture_value
-    temp_value = readTemperature()
-    moisture_value = readMoisture()
+    # temp_value = readTemperature()
+    # moisture_value = readMoisture()
+    temp_value = random.randint(20, 30)
+    moisture_value = random.randint(40, 60)
     print (f'The value of moisture is {moisture_value}')
     print (f'The value of temp is {temp_value}')
-    return 0
+
+
+    
+
 def sendPredict():
     print ("Sending predict ...")
-    return 0    
+
+    
 def runCommand():
     print("Running command ...")
     return 0
 
-
-
-SCH_Add_Task(listenSensor, 0, 3)
-SCH_Add_Task(sendPredict, 0, 3)
-SCH_Add_Task (runCommand, 0, 3)
+def prepare_model ():
+    print ("Preparing model ...")
+    global model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features
+    model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = prepare_cnn_model(temp_value, moisture_value)
+    print (f'In_seq1: {in_seq1}')
+    print (f'In_seq2: {in_seq2}')
+    
+SCH_Add_Task(listenSensor, 0, 1)
+SCH_Add_Task (prepare_model, 0, 0)
+SCH_Add_Task(sendPredict, 0, 1)
+SCH_Add_Task (runCommand, 0, 1)
 while True:
     SCH_Dispatch_Tasks()
+    predict_temp, predict_mois, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = predict_value(temp_value, moisture_value, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features)
+    print (f'Predicted temp: {predict_temp}, Predicted mois: {predict_mois}')
+    print ('\n')
