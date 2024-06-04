@@ -117,33 +117,47 @@ def listenSensor():
     # moisture_value = readMoisture()
     temp_value = random.randint(20, 30)
     moisture_value = random.randint(40, 60)
-    print (f'The value of moisture is {moisture_value}')
-    print (f'The value of temp is {temp_value}')
-
-
-    
-
+    # print (f'The value of temp is {temp_value}')
+    # print (f'The value of moisture is {moisture_value}')
+    return 0
 def sendPredict():
-    print ("Sending predict ...")
-
-    
+    global sendPredict_flag
+    if sendPredict_flag:
+        print ("Sending predict ...")
+        sendPredict_flag = False
+    return 0
 def runCommand():
-    print("Running command ...")
+    global runCommand_flag
+    if runCommand_flag:
+        print("Running command ...")
+        runCommand_flag = False
     return 0
 
 def prepare_model ():
     print ("Preparing model ...")
     global model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features
     model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = prepare_cnn_model(temp_value, moisture_value)
-    print (f'In_seq1: {in_seq1}')
-    print (f'In_seq2: {in_seq2}')
-    
-SCH_Add_Task(listenSensor, 0, 1)
+    # print (f'nsi: {n_steps_in}, nso: {n_steps_out}, nf: {n_features}')
+    # print (f'In_seq1: {in_seq1}')
+    # print (f'In_seq2: {in_seq2}')
+    return 0
+
+def predict():
+    global sendPredict_flag, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features 
+    predict_temp_1, predict_mois_1,predict_temp_2, predict_mois_2,predict_temp_3, predict_mois_3, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = predict_value(temp_value, moisture_value, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features)
+    print (f'Predicted temp: {predict_temp_1}, {predict_temp_2}, {predict_temp_3} Predicted mois: {predict_mois_1}, {predict_mois_2}, {predict_mois_3}')
+    if predict_temp_1 > 35 and predict_temp_2 >35 and predict_temp_3 >35:
+        sendPredict_flag = True
+    elif predict_mois_1 > 75 and predict_mois_2 > 75 and predict_mois_3 > 75:
+        sendPredict_flag = True
+        
+        
+SCH_Add_Task(listenSensor, 0, 3)
 SCH_Add_Task (prepare_model, 0, 0)
-SCH_Add_Task(sendPredict, 0, 1)
-SCH_Add_Task (runCommand, 0, 1)
+SCH_Add_Task (predict, 0, 3)
+SCH_Add_Task(sendPredict, 0, 3)
+SCH_Add_Task (runCommand, 0, 3)
 while True:
     SCH_Dispatch_Tasks()
-    predict_temp, predict_mois, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = predict_value(temp_value, moisture_value, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features)
-    print (f'Predicted temp: {predict_temp}, Predicted mois: {predict_mois}')
-    print ('\n')
+
+    # print (f'P redicted temp: {predict_temp_1}, {predict_temp_2}, {predict_temp_3} Predicted mois: {predict_mois_1}, {predict_mois_2}, {predict_mois_3}')

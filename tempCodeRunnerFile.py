@@ -1,7 +1,3 @@
-client = MQTTClient(AIO_USERNAME , AIO_KEY)
-# client.on_connect = connected
-# client.on_disconnect = disconnected
-# client.on_message = message
-# client.on_subscribe = subscribe
-# client.connect()
-# client.loop_background()
+ps_out}, nf: {n_features}')
+    # print (f'In_seq1: {in_seq1}')
+    # print (f'In_seq2: {in_seq2}')

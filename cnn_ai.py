@@ -48,7 +48,8 @@ def update_input(a, b, c, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out):
     # choose a number of time steps
     # convert into input/output
     X, y = split_sequences(dataset, n_steps_in, n_steps_out)
-    
+    n_output = y.shape[1] * y.shape[2]
+    y = y.reshape((y.shape[0], n_output))
     
     return in_seq1, in_seq2, out_seq, x_input, X, y
 
@@ -65,7 +66,7 @@ def prepare_cnn_model(temp_value, moisture_value):
     # horizontally stack columns
     dataset = hstack((in_seq1, in_seq2, out_seq))
     # choose a number of time steps
-    n_steps_in, n_steps_out = 3, 1
+    n_steps_in, n_steps_out = 3, 3
     # convert into input/output
     X, y = split_sequences(dataset, n_steps_in, n_steps_out)
     # flatten output
@@ -92,9 +93,9 @@ def predict_value(temp, mois, model, in_seq1, in_seq2, out_seq, n_steps_in, n_st
     model.fit(X, y, epochs=100, verbose=0)
     x_input = x_input.reshape((1, n_steps_in, n_features))
     result = model.predict(x_input, verbose=0)
-    print (f'Result: {result}')
-    print (f'In_seq1: {in_seq1}')
-    print (f'In_seq2: {in_seq2}')
+    # print (f'Result: {result}')
+    # print (f'In_seq1: {in_seq1}')
+    # print (f'In_seq2: {in_seq2}')
     
 
-    return result[0,0], result[0,1], model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features
+    return result[0,0], result[0,1],result[0,3],result[0,4],result[0,6],result[0,7], model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features
