@@ -3,19 +3,18 @@ from scheduler import *
 # from cnn_ai import *
 import sys
 import json
-# from Adafruit_IO import MQTTClient
+from Adafruit_IO import MQTTClient
 import time
 import random
 import threading
 
-AIO_FEED_IDs = ["Command"]
+AIO_FEED_IDs = ["Command", "announceUser", "deviceActive"]
 AIO_USERNAME = "IOT_232"
-AIO_KEY = ""    
+AIO_KEY = "aio_Ybad86AJTIcVVQOl7pqqGK5pNCkS"    
 
 
 temp_value = 0
 moisture_value = 0
-
 
 
 cycle = None
@@ -40,19 +39,19 @@ n_steps_in = 0
 n_steps_out= 0 
 n_features = 0
 
-# def connected(client):
-#     print("Ket noi thanh cong ...")
-#     for topic in AIO_FEED_IDs:
-#         client.subscribe(topic)
+def connected(client):
+    print("Ket noi thanh cong ...")
+    for topic in AIO_FEED_IDs:
+        client.subscribe(topic)
 
-# def subscribe(client , userdata , mid , granted_qos):
-#     print("Subscribe thanh cong ...")
+def subscribe(client , userdata , mid , granted_qos):
+    print("Subscribe thanh cong ...")
 
-# def disconnected(client):
-#     print("Ngat ket noi ...")
-#     sys.exit (1)
+def disconnected(client):
+    print("Ngat ket noi ...")
+    sys.exit (1)
 
-# def message(client , feed_id , payload):
+def message(client , feed_id , payload):
 #     print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
 #     global cycle, flow1, flow2, flow3, area, schedulerName, startTime, stopTime
 #     try:
@@ -68,16 +67,16 @@ n_features = 0
 #         area = data.get('area', area)
 #     except json.JSONDecodeError:
 #         print("Error decoding JSON")
+    return 0
 
-
-#Set up Adafruit IO MQTT Client
-# client = MQTTClient(AIO_USERNAME , AIO_KEY)
-# client.on_connect = connected
-# client.on_disconnect = disconnected
-# client.on_message = message
-# client.on_subscribe = subscribe
-# client.connect()
-# client.loop_background()
+# Set up Adafruit IO MQTT Client
+client = MQTTClient(AIO_USERNAME , AIO_KEY)
+client.on_connect = connected
+client.on_disconnect = disconnected
+client.on_message = message
+client.on_subscribe = subscribe
+client.connect()
+client.loop_background()
 
 # while True:
 #     try:
@@ -121,18 +120,18 @@ def listenSensor():
     # print (f'The value of moisture is {moisture_value}')
     return 0
 def sendPredict():
-    global sendPredict_flag
+    global sendPredict_flag, client
     if sendPredict_flag:
-        print ("Sending predict ...")
+        print ("  predict ...")
+        client.publish("announceUser", 1)
         sendPredict_flag = False
     return 0
 def runCommand():
-    global runCommand_flag
+    global runCommand_flag, client
     if runCommand_flag:
         print("Running command ...")
         runCommand_flag = False
     return 0
-
 def prepare_model ():
     print ("Preparing model ...")
     global model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features
@@ -146,15 +145,15 @@ def predict():
     global sendPredict_flag, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features 
     predict_temp_1, predict_mois_1,predict_temp_2, predict_mois_2,predict_temp_3, predict_mois_3, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = predict_value(temp_value, moisture_value, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features)
     print (f'Predicted temp: {predict_temp_1}, {predict_temp_2}, {predict_temp_3} Predicted mois: {predict_mois_1}, {predict_mois_2}, {predict_mois_3}')
-    if predict_temp_1 > 35 and predict_temp_2 >35 and predict_temp_3 >35:
+    if predict_temp_1 > 25 and predict_temp_2 >25 and predict_temp_3 >25:
         sendPredict_flag = True
-    elif predict_mois_1 > 75 and predict_mois_2 > 75 and predict_mois_3 > 75:
+    elif predict_mois_1 > 70 and predict_mois_2 > 70 and predict_mois_3 > 70:
         sendPredict_flag = True
         
         
 SCH_Add_Task(listenSensor, 0, 3)
 SCH_Add_Task (prepare_model, 0, 0)
-SCH_Add_Task (predict, 0, 3)
+SCH_Add_Task (predict, 0, 1)
 SCH_Add_Task(sendPredict, 0, 3)
 SCH_Add_Task (runCommand, 0, 3)
 while True:
