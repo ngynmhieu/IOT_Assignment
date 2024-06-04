@@ -7,10 +7,12 @@ from Adafruit_IO import MQTTClient
 import time
 import random
 import threading
+from datetime import datetime
+from fsm_auto import *
 
 AIO_FEED_IDs = ["command", "announceUser", "deviceActive"]
 AIO_USERNAME = "IOT_232"
-AIO_KEY = "aio_nxVa94yKlsI1ECWnvE8cQMXITwkw"    
+AIO_KEY = "aio_TvkZ34KKzsN109681GqEEDxcX5X9"    
 
 
 temp_value = 0
@@ -52,7 +54,7 @@ def disconnected(client):
 
 def message(client , feed_id , payload):
     print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
-    global cycle, flow1, flow2, flow3, area, startTime, stopTime, area
+    global cycle, flow1, flow2, flow3, area, startTime, stopTime, area, runCommand_flag
     if feed_id == 'command':
         try:
             data = json.loads(payload)
@@ -64,8 +66,7 @@ def message(client , feed_id , payload):
             startTime = data['startTime']
             stopTime = data['stopTime']
             area = data['area']
-            print (f'cycle: {cycle}, flow1: {flow1}, flow2: {flow2}, flow3: {flow3}, area: {area}, startTime: {startTime}, stopTime: {stopTime}')
-            print (f'Recived data successfully ...')
+            runCommand_flag = True
         except json.JSONDecodeError:
             print("Error decoding JSON")
 
@@ -78,19 +79,6 @@ client.on_subscribe = subscribe
 client.connect()
 client.loop_background()
 
-# while True:
-#     try:
-#         if cycle is not None:
-#             client.publish('Command', json.dumps({"cycle": cycle}))
-#             client.publish('Command', json.dumps({"flow1": flow1}))
-#             client.publish('Command', json.dumps({"flow2": flow2}))
-#             client.publish('Command', json.dumps({"flow3": flow3}))
-#             client.publish('Command', json.dumps({"area": area}))
-#         time.sleep(10)  
-#     except Exception as e:
-#         print(f"Failed to publish: {str(e)}")
-#         time.sleep(5)
-
 
 # Set up timer to update scheduler
 def timer_callback(): #set timer to 1 second
@@ -98,17 +86,33 @@ def timer_callback(): #set timer to 1 second
     threading.Timer(1.0, timer_callback).start()
 threading.Timer(1.0, timer_callback).start()
     
-
-
-
-# temp = 20
-# mois = 50
-
-
-    
-
-
-
+def runCycles(cycle, flow1, flow2, flow3, area, startTime, stopTime):
+    global client
+    print("Running cycle ...")
+    startTime_obj = datetime.strptime(startTime, "%H:%M")
+    stopTime_obj = datetime.strptime(stopTime, "%H:%M")
+    startTime = startTime_obj.hour * 3600 + startTime_obj.minute * 60
+    stopTime = stopTime_obj.hour * 3600 + stopTime_obj.minute * 60
+    duration = stopTime - startTime
+    print (f'Start time: {startTime}; Stop time: {stopTime}')
+    cycle = int(cycle)
+    area = int (area)
+    while True:
+        current_time = time.localtime().tm_hour * 3600 + time.localtime().tm_min * 60 + time.localtime().tm_sec
+        # print (f'Current time: {current_time}')
+        if current_time >= startTime and current_time <= stopTime and cycle > 0:
+            while True:
+                flag = fsm_auto(flow1, flow2, flow3, area, client)
+                if flag == 1:
+                    break
+                time.sleep(1)
+            cycle -= 1
+            area += 1
+            if (area > 3): area = 1
+        elif current_time > stopTime or cycle == 0:
+            break
+        else:
+            time.sleep(1)
 # MAIN 
 def listenSensor():
     global temp_value, moisture_value
@@ -127,18 +131,18 @@ def sendPredict():
         sendPredict_flag = False
 
 def runCommand():
-    global runCommand_flag, client
+    global runCommand_flag, cycle, flow1, flow2, flow3, area, startTime, stopTime
     if runCommand_flag:
         print("Running command ...")
+        cycleThread = threading.Thread(target=runCycles, args=(cycle, flow1, flow2, flow3, area, startTime, stopTime))
+        cycleThread.start()
+        print ('Start thread successfully')
         runCommand_flag = False
 
 def prepare_model ():
     print ("Preparing model ...")
     global model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features
     model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = prepare_cnn_model(temp_value, moisture_value)
-    # print (f'nsi: {n_steps_in}, nso: {n_steps_out}, nf: {n_features}')
-    # print (f'In_seq1: {in_seq1}')
-    # print (f'In_seq2: {in_seq2}')
 
 def predict():
     global sendPredict_flag, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features 
@@ -152,7 +156,7 @@ def predict():
         
 SCH_Add_Task(listenSensor, 0, 3)
 SCH_Add_Task (prepare_model, 0, 0)
-SCH_Add_Task (predict, 0, 1)
+SCH_Add_Task (predict, 0, 3)
 SCH_Add_Task(sendPredict, 0, 3)
 SCH_Add_Task (runCommand, 0, 3)
 while True:
