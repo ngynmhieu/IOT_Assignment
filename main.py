@@ -98,7 +98,7 @@ def runCycles(cycle, flow1, flow2, flow3, area, startTime, stopTime):
     cycle = int(cycle)
     area = int (area)
     while True:
-        current_time = time.localtime().tm_hour * 3600 + time.localtime().tm_min * 60 + time.localtime().tm_sec + 3600*5
+        current_time = time.localtime().tm_hour * 3600 + time.localtime().tm_min * 60 + time.localtime().tm_sec + 3600*6
         print (f'Current time: {current_time}')
         if current_time >= startTime and current_time <= stopTime and cycle > 0:
             while True:
