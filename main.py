@@ -12,7 +12,7 @@ from fsm_auto import *
 
 AIO_FEED_IDs = ["command", "announceUser", "deviceActive"]
 AIO_USERNAME = "IOT_232"
-AIO_KEY = "aio_TvkZ34KKzsN109681GqEEDxcX5X9"    
+AIO_KEY = ""    
 
 
 temp_value = 0
