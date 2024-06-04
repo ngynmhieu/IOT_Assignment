@@ -8,9 +8,9 @@ import time
 import random
 import threading
 
-AIO_FEED_IDs = ["Command", "announceUser", "deviceActive"]
+AIO_FEED_IDs = ["command", "announceUser", "deviceActive"]
 AIO_USERNAME = "IOT_232"
-AIO_KEY = "aio_Ybad86AJTIcVVQOl7pqqGK5pNCkS"    
+AIO_KEY = "aio_nxVa94yKlsI1ECWnvE8cQMXITwkw"    
 
 
 temp_value = 0
@@ -22,7 +22,6 @@ flow1 = None
 flow2 = None
 flow3 = None
 area = None
-schedulerName = None
 startTime = None
 stopTime = None
 
@@ -52,22 +51,23 @@ def disconnected(client):
     sys.exit (1)
 
 def message(client , feed_id , payload):
-#     print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
-#     global cycle, flow1, flow2, flow3, area, schedulerName, startTime, stopTime
-#     try:
-#         data = json.loads(payload)
-#         print(f"Processed JSON data: {data}")
-#         cycle = data.get('cycle', cycle)
-#         flow1 = data.get('flow1', flow1)
-#         flow2 = data.get('flow2', flow2)
-#         flow3 = data.get('flow3', flow3)
-#         schedulerName = data.get('schedulerName', schedulerName)
-#         startTime = data.get('startTime', startTime)
-#         stopTime = data.get('stopTime', stopTime)
-#         area = data.get('area', area)
-#     except json.JSONDecodeError:
-#         print("Error decoding JSON")
-    return 0
+    print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
+    global cycle, flow1, flow2, flow3, area, startTime, stopTime, area
+    if feed_id == 'command':
+        try:
+            data = json.loads(payload)
+            cycle = data['cycle']
+            flow1 = data['flow1']
+            flow2 = data['flow2']
+            flow3 = data['flow3']
+            area = data['area']
+            startTime = data['startTime']
+            stopTime = data['stopTime']
+            area = data['area']
+            print (f'cycle: {cycle}, flow1: {flow1}, flow2: {flow2}, flow3: {flow3}, area: {area}, startTime: {startTime}, stopTime: {stopTime}')
+            print (f'Recived data successfully ...')
+        except json.JSONDecodeError:
+            print("Error decoding JSON")
 
 # Set up Adafruit IO MQTT Client
 client = MQTTClient(AIO_USERNAME , AIO_KEY)
@@ -118,20 +118,20 @@ def listenSensor():
     moisture_value = random.randint(40, 60)
     # print (f'The value of temp is {temp_value}')
     # print (f'The value of moisture is {moisture_value}')
-    return 0
+
 def sendPredict():
     global sendPredict_flag, client
     if sendPredict_flag:
         print ("  predict ...")
         client.publish("announceUser", 1)
         sendPredict_flag = False
-    return 0
+
 def runCommand():
     global runCommand_flag, client
     if runCommand_flag:
         print("Running command ...")
         runCommand_flag = False
-    return 0
+
 def prepare_model ():
     print ("Preparing model ...")
     global model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features
@@ -139,13 +139,12 @@ def prepare_model ():
     # print (f'nsi: {n_steps_in}, nso: {n_steps_out}, nf: {n_features}')
     # print (f'In_seq1: {in_seq1}')
     # print (f'In_seq2: {in_seq2}')
-    return 0
 
 def predict():
     global sendPredict_flag, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features 
     predict_temp_1, predict_mois_1,predict_temp_2, predict_mois_2,predict_temp_3, predict_mois_3, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = predict_value(temp_value, moisture_value, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features)
-    print (f'Predicted temp: {predict_temp_1}, {predict_temp_2}, {predict_temp_3} Predicted mois: {predict_mois_1}, {predict_mois_2}, {predict_mois_3}')
-    if predict_temp_1 > 25 and predict_temp_2 >25 and predict_temp_3 >25:
+    # print (f'Predicted temp: {predict_temp_1}, {predict_temp_2}, {predict_temp_3} Predicted mois: {predict_mois_1}, {predict_mois_2}, {predict_mois_3}')
+    if predict_temp_1 > 30 and predict_temp_2 > 30 and predict_temp_3 > 30:
         sendPredict_flag = True
     elif predict_mois_1 > 70 and predict_mois_2 > 70 and predict_mois_3 > 70:
         sendPredict_flag = True
