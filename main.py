@@ -9,6 +9,7 @@ import random
 import threading
 from datetime import datetime
 from fsm_auto import *
+from physical import *
 
 AIO_FEED_IDs = ["command", "announceUser", "deviceActive"]
 AIO_USERNAME = "IOT_232"
@@ -118,8 +119,8 @@ def listenSensor():
     global temp_value, moisture_value
     # temp_value = readTemperature()
     # moisture_value = readMoisture()
-    temp_value = random.randint(20, 30)
-    moisture_value = random.randint(40, 60)
+    temp_value = readTemperature()
+    moisture_value = readMoisture()
     # print (f'The value of temp is {temp_value}')
     # print (f'The value of moisture is {moisture_value}')
 
