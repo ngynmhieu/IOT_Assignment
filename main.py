@@ -1,5 +1,6 @@
 from all import *
 from scheduler import *
+from IOT_Assignment.controller import *
 # from cnn_ai import *
 import sys
 import json
@@ -11,9 +12,9 @@ from datetime import datetime
 from fsm_auto import *
 from physical import *
 
-AIO_FEED_IDs = ["command", "announceUser", "deviceActive"]
-AIO_USERNAME = "IOT_232"
-AIO_KEY = ""    
+# AIO_FEED_IDs = ["command", "announceUser", "deviceActive"]
+# AIO_USERNAME = "IOT_232"
+# AIO_KEY = ""    
 
 
 temp_value = 0
@@ -41,44 +42,44 @@ n_steps_in = 0
 n_steps_out= 0 
 n_features = 0
 
-def connected(client):
-    print("Ket noi thanh cong ...")
-    for topic in AIO_FEED_IDs:
-        client.subscribe(topic)
+# def connected(client):
+#     print("Ket noi thanh cong ...")
+#     for topic in AIO_FEED_IDs:
+#         client.subscribe(topic)
 
-def subscribe(client , userdata , mid , granted_qos):
-    print("Subscribe thanh cong ...")
+# def subscribe(client , userdata , mid , granted_qos):
+#     print("Subscribe thanh cong ...")
 
-def disconnected(client):
-    print("Ngat ket noi ...")
-    sys.exit (1)
+# def disconnected(client):
+#     print("Ngat ket noi ...")
+#     sys.exit (1)
 
-def message(client , feed_id , payload):
-    print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
-    global cycle, flow1, flow2, flow3, area, startTime, stopTime, area, runCommand_flag
-    if feed_id == 'command':
-        try:
-            data = json.loads(payload)
-            cycle = data['cycle']
-            flow1 = data['flow1']
-            flow2 = data['flow2']
-            flow3 = data['flow3']
-            area = data['area']
-            startTime = data['startTime']
-            stopTime = data['stopTime']
-            area = data['area']
-            runCommand_flag = True
-        except json.JSONDecodeError:
-            print("Error decoding JSON")
+# def message(client , feed_id , payload):
+#     # print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
+#     global cycle, flow1, flow2, flow3, area, startTime, stopTime, area, runCommand_flag
+#     if feed_id == 'command':
+#         try:
+#             data = json.loads(payload)
+#             cycle = data['cycle']
+#             flow1 = data['flow1']
+#             flow2 = data['flow2']
+#             flow3 = data['flow3']
+#             area = data['area']
+#             startTime = data['startTime']
+#             stopTime = data['stopTime']
+#             area = data['area']
+#             runCommand_flag = True
+#         except json.JSONDecodeError:
+#             print("Error decoding JSON")
 
-# Set up Adafruit IO MQTT Client
-client = MQTTClient(AIO_USERNAME , AIO_KEY)
-client.on_connect = connected
-client.on_disconnect = disconnected
-client.on_message = message
-client.on_subscribe = subscribe
-client.connect()
-client.loop_background()
+# # Set up Adafruit IO MQTT Client
+# client = MQTTClient(AIO_USERNAME , AIO_KEY)
+# client.on_connect = connected
+# client.on_disconnect = disconnected
+# client.on_message = message
+# client.on_subscribe = subscribe
+# client.connect()
+# client.loop_background()
 
 
 # Set up timer to update scheduler
