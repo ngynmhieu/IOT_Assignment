@@ -53,12 +53,12 @@ def serial_read_data(ser):
         data_array = list(out)
         print("Data array:", data_array)
         if len(data_array) >= 7:
-            value_bytes = data_array[3:4]  
-            value = int.from_bytes(value_bytes, byteorder='big')  # Change 'big' to 'little' if needed
+            value_bytes = data_array[3:5]  
+            value = int.from_bytes(value_bytes, byteorder='big') 
             return value
         else:
-            return -1
-    return 0
+            return -1  
+    return 0  
 
 soil_temperature = [1, 3, 0, 6, 0, 1, 100, 11]
 def readTemperature():
