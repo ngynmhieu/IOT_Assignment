@@ -50,11 +50,12 @@ def serial_read_data(ser):
     bytesToRead = ser.inWaiting()
     if bytesToRead > 0:
         out = ser.read(bytesToRead)
-        data_array = [b for b in out]
-        print(data_array)
+        data_array = list(out)
+        print("Data array:", data_array)
         if len(data_array) >= 7:
-            array_size = len(data_array)
-            value = data_array[array_size - 4] * 256 + data_array[array_size - 3]
+            # Use slicing to get the last 4 bytes and ensure they are in correct order
+            value_bytes = data_array[-4:-2]  # Adjust this slice based on your actual data structure
+            value = int.from_bytes(value_bytes, byteorder='big')  # Change 'big' to 'little' if needed
             return value
         else:
             return -1
