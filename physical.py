@@ -51,7 +51,7 @@ def serial_read_data(ser):
     if bytesToRead > 0:
         out = ser.read(bytesToRead)
         data_array = list(out)
-        print("Data array:", data_array)
+        # print("Data array:", data_array)
         if len(data_array) >= 7:
             value_bytes = data_array[3:5]  
             value = int.from_bytes(value_bytes, byteorder='big') 
