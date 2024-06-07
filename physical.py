@@ -53,8 +53,7 @@ def serial_read_data(ser):
         data_array = list(out)
         print("Data array:", data_array)
         if len(data_array) >= 7:
-            # Use slicing to get the last 4 bytes and ensure they are in correct order
-            value_bytes = data_array[-4:-2]  # Adjust this slice based on your actual data structure
+            value_bytes = data_array[-4:-2]  
             value = int.from_bytes(value_bytes, byteorder='big')  # Change 'big' to 'little' if needed
             return value
         else:
