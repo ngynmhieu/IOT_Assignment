@@ -1,6 +1,6 @@
 from all import *
 from scheduler import *
-from IOT_Assignment.controller import *
+from controller import *
 # from cnn_ai import *
 import sys
 import json
