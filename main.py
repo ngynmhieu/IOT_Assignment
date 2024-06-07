@@ -121,8 +121,8 @@ def listenSensor():
     # moisture_value = readMoisture()
     temp_value = readTemperature()
     moisture_value = readMoisture()
-    # print (f'The value of temp is {temp_value}')
-    # print (f'The value of moisture is {moisture_value}')
+    print (f'The value of temp is {temp_value}')
+    print (f'The value of moisture is {moisture_value}')
 
 def sendPredict():
     global sendPredict_flag, client
