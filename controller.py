@@ -3,6 +3,7 @@ import json
 from Adafruit_IO import MQTTClient
 import time
 import random
+
 AIO_FEED_IDs = ["command", "announceUser", "deviceActive"]
 AIO_USERNAME = "IOT_232"
 AIO_KEY = ""  
