@@ -53,7 +53,7 @@ def serial_read_data(ser):
         data_array = list(out)
         print("Data array:", data_array)
         if len(data_array) >= 7:
-            value_bytes = data_array[-4:-2]  
+            value_bytes = data_array[3:4]  
             value = int.from_bytes(value_bytes, byteorder='big')  # Change 'big' to 'little' if needed
             return value
         else:
@@ -62,19 +62,13 @@ def serial_read_data(ser):
 
 soil_temperature = [1, 3, 0, 6, 0, 1, 100, 11]
 def readTemperature():
-    print (f"First read temperature")
-    # serial_read_data(ser)
     ser.write(soil_temperature)
-    print (f'After write')
     time.sleep(1)
     return serial_read_data(ser)
 
 soil_moisture = [1, 3, 0, 7, 0, 1, 53, 203]
 def readMoisture():
-    print (f'First read moisture')
-    # serial_read_data(ser)
     ser.write(soil_moisture)
-    print (f'After write')
     time.sleep(1)
     return serial_read_data(ser)
 #test
