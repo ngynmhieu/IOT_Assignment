@@ -30,6 +30,8 @@ startTime = None
 stopTime = None
 
 
+sendPredict_flag = False
+runCommand_flag = False
 # Predict_lock = threading.Lock()
 
 
