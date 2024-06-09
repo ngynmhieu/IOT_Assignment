@@ -127,7 +127,7 @@ def listenSensor():
 def sendPredict():
     global sendPredict_flag, client
     if sendPredict_flag:
-        print ("  predict ...")
+        # print ("  predict ...")
         client.publish("announceUser", 1)
         sendPredict_flag = False
 
@@ -162,5 +162,5 @@ SCH_Add_Task(sendPredict, 0, 3)
 SCH_Add_Task (runCommand, 0, 3)
 while True:
     SCH_Dispatch_Tasks()
-
+    print (f'\n ------------------------------------------ ')
     # print (f'P redicted temp: {predict_temp_1}, {predict_temp_2}, {predict_temp_3} Predicted mois: {predict_mois_1}, {predict_mois_2}, {predict_mois_3}')

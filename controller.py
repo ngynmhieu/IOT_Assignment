@@ -22,7 +22,7 @@ def disconnected(client):
     sys.exit (1)
 
 def message(client , feed_id , payload):
-    # print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
+    print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
     global cycle, flow1, flow2, flow3, area, startTime, stopTime, area, runCommand_flag
     if feed_id == 'command':
         try:
