@@ -29,9 +29,8 @@ area = None
 startTime = None
 stopTime = None
 
-sendPredict_flag = False
-runCommand_flag = False
-Predict_lock = threading.Lock()
+
+# Predict_lock = threading.Lock()
 
 
 in_seq1 = array([0, 0, 0, 0, 0, 0, 0, 0, 0])

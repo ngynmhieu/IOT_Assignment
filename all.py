@@ -18,3 +18,7 @@ PUMP_IN = 4
 SELECTOR = 5
 PUMP_OUT = 6
 NEXT_CYCLE = 7
+
+
+sendPredict_flag = False
+runCommand_flag = False
