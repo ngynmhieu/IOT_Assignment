@@ -45,12 +45,12 @@ def runCycles(cycle, flow1, flow2, flow3, area, startTime, stopTime):
     startTime = startTime_obj.hour * 3600 + startTime_obj.minute * 60
     stopTime = stopTime_obj.hour * 3600 + stopTime_obj.minute * 60
     duration = stopTime - startTime
-    print (f'Start time: {startTime}; Stop time: {stopTime}')
+    # print (f'Start time: {startTime}; Stop time: {stopTime}')
     cycle = int(cycle)
     area = int (area)
     while True:
         current_time = time.localtime().tm_hour * 3600 + time.localtime().tm_min * 60 + time.localtime().tm_sec + 3600*6
-        print (f'Current time: {current_time}')
+        # print (f'Current time: {current_time}')
         if current_time >= startTime and current_time <= stopTime and cycle > 0:
             while True:
                 flag = fsm_auto(flow1, flow2, flow3, area, client)
@@ -84,7 +84,7 @@ def runCommand():
         print("Running command ...")
         cycleThread = threading.Thread(target=runCycles, args=(get_schedule('cycle'), get_schedule('flow1'), get_schedule('flow2'), get_schedule('flow3'), get_schedule('area'), get_schedule('startTime'), get_schedule('stopTime')))
         cycleThread.start()
-        print ('Start thread successfully')
+        # print ('Start thread successfully')
         set_runCommand_flag(False)
 
 def prepare_model ():
@@ -95,8 +95,8 @@ def prepare_model ():
 def predict():
     global model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features 
     predict_temp_1, predict_mois_1,predict_temp_2, predict_mois_2,predict_temp_3, predict_mois_3, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = predict_value(temp_value, moisture_value, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features)
-    client.publish("temp_predict", predict_temp_1)
-    client.publish("moist_predict", predict_mois_1)
+    client.publish("temp_predict", int(predict_temp_1))
+    client.publish("moist_predict", int (predict_mois_1))
     if predict_temp_1 > 30 and predict_temp_2 > 30 and predict_temp_3 > 30:
         set_sendPredict_flag(True)
     elif predict_mois_1 > 70 and predict_mois_2 > 70 and predict_mois_3 > 70:
@@ -108,7 +108,7 @@ def predict():
 SCH_Add_Task(listenSensor, 0, 3)
 SCH_Add_Task (prepare_model, 0, 0)
 SCH_Add_Task (predict, 0, 3)
-SCH_Add_Task(sendPredict, 0, 3)
+SCH_Add_Task(sendPredict, 0, 5)
 SCH_Add_Task (runCommand, 0, 3)
 while True:
     SCH_Dispatch_Tasks()
