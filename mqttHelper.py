@@ -22,7 +22,7 @@ def disconnected(client):
     sys.exit (1)
 
 def message(client , feed_id , payload):
-    print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
+    # print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
     if feed_id == 'command':
         try:
             data = json.loads(payload)

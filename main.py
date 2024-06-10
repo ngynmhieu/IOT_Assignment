@@ -1,6 +1,6 @@
 from scheduler import *
 from cnn_ai import *
-from controller import *
+from mqttHelper import *
 # from cnn_ai import *
 import sys
 import json
@@ -11,11 +11,6 @@ import threading
 from datetime import datetime
 from fsm_auto import *
 from physical import *
-
-
-# AIO_FEED_IDs = ["command", "announceUser", "deviceActive"]
-# AIO_USERNAME = "IOT_232"
-# AIO_KEY = ""    
 
 
 temp_value = 0
@@ -33,45 +28,6 @@ model = Sequential()
 n_steps_in = 0
 n_steps_out= 0 
 n_features = 0
-
-# def connected(client):
-#     print("Ket noi thanh cong ...")
-#     for topic in AIO_FEED_IDs:
-#         client.subscribe(topic)
-
-# def subscribe(client , userdata , mid , granted_qos):
-#     print("Subscribe thanh cong ...")
-
-# def disconnected(client):
-#     print("Ngat ket noi ...")
-#     sys.exit (1)
-
-# def message(client , feed_id , payload):
-#     # print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
-#     global cycle, flow1, flow2, flow3, area, startTime, stopTime, area, runCommand_flag
-#     if feed_id == 'command':
-#         try:
-#             data = json.loads(payload)
-#             cycle = data['cycle']
-#             flow1 = data['flow1']
-#             flow2 = data['flow2']
-#             flow3 = data['flow3']
-#             area = data['area']
-#             startTime = data['startTime']
-#             stopTime = data['stopTime']
-#             area = data['area']
-#             runCommand_flag = True
-#         except json.JSONDecodeError:
-#             print("Error decoding JSON")
-
-# # Set up Adafruit IO MQTT Client
-# client = MQTTClient(AIO_USERNAME , AIO_KEY)
-# client.on_connect = connected
-# client.on_disconnect = disconnected
-# client.on_message = message
-# client.on_subscribe = subscribe
-# client.connect()
-# client.loop_background()
 
 
 # Set up timer to update scheduler
@@ -111,22 +67,19 @@ def runCycles(cycle, flow1, flow2, flow3, area, startTime, stopTime):
 # MAIN 
 def listenSensor():
     global temp_value, moisture_value
-    # temp_value = readTemperature()
-    # moisture_value = readMoisture()
-    temp_value = random.randint(20, 40)
-    moisture_value = random.randint(30, 90)
-    # print (f'The value of temp is {temp_value}')
-    # print (f'The value of moisture is {moisture_value}')
+    temp_value = readTemperature()/1000
+    moisture_value = readMoisture()
+    print (f'Temp: {temp_value}, Moisture: {moisture_value}')
+    
 
 def sendPredict():
     # global client
     if is_sendPredict_flag():
-        # print ("  predict ...")
+        print ("Sending predict ...")
         client.publish("announceUser", 1)
         set_sendPredict_flag(False)
 
 def runCommand():
-    # global runCommand_flag, cycle, flow1, flow2, flow3, area, startTime, stopTime
     if is_runCommand_flag():
         print("Running command ...")
         cycleThread = threading.Thread(target=runCycles, args=(get_schedule('cycle'), get_schedule('flow1'), get_schedule('flow2'), get_schedule('flow3'), get_schedule('area'), get_schedule('startTime'), get_schedule('stopTime')))
@@ -142,10 +95,11 @@ def prepare_model ():
 def predict():
     global model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features 
     predict_temp_1, predict_mois_1,predict_temp_2, predict_mois_2,predict_temp_3, predict_mois_3, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = predict_value(temp_value, moisture_value, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features)
-    # print (f'Predicted temp: {predict_temp_1}, {predict_temp_2}, {predict_temp_3} Predicted mois: {predict_mois_1}, {predict_mois_2}, {predict_mois_3}')
     if predict_temp_1 > 30 and predict_temp_2 > 30 and predict_temp_3 > 30:
         set_sendPredict_flag(True)
     elif predict_mois_1 > 70 and predict_mois_2 > 70 and predict_mois_3 > 70:
+        set_sendPredict_flag(True)
+    elif temp_value > 30 and moisture_value > 70:
         set_sendPredict_flag(True)
 
         
@@ -156,5 +110,3 @@ SCH_Add_Task(sendPredict, 0, 3)
 SCH_Add_Task (runCommand, 0, 3)
 while True:
     SCH_Dispatch_Tasks()
-    # print (f'\n ------------------------------------------ ')
-    # print (f'P redicted temp: {predict_temp_1}, {predict_temp_2}, {predict_temp_3} Predicted mois: {predict_mois_1}, {predict_mois_2}, {predict_mois_3}')
