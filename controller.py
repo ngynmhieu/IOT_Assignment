@@ -23,19 +23,11 @@ def disconnected(client):
 
 def message(client , feed_id , payload):
     print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
-    global cycle, flow1, flow2, flow3, area, startTime, stopTime, area, runCommand_flag
     if feed_id == 'command':
         try:
             data = json.loads(payload)
-            cycle = data['cycle']
-            flow1 = data['flow1']
-            flow2 = data['flow2']
-            flow3 = data['flow3']
-            area = data['area']
-            startTime = data['startTime']
-            stopTime = data['stopTime']
-            area = data['area']
-            runCommand_flag = True
+            set_schedule(data['cycle'], data['flow1'], data['flow2'], data['flow3'], data['area'], data['startTime'], data['stopTime'])
+            set_runCommand_flag(True)
         except json.JSONDecodeError:
             print("Error decoding JSON")
 

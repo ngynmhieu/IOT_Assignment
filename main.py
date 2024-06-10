@@ -1,4 +1,3 @@
-from all import *
 from scheduler import *
 from cnn_ai import *
 from controller import *
@@ -12,7 +11,7 @@ import threading
 from datetime import datetime
 from fsm_auto import *
 from physical import *
-from all import *
+
 
 # AIO_FEED_IDs = ["command", "announceUser", "deviceActive"]
 # AIO_USERNAME = "IOT_232"
@@ -86,6 +85,7 @@ def runCycles(cycle, flow1, flow2, flow3, area, startTime, stopTime):
     print("Running cycle ...")
     startTime_obj = datetime.strptime(startTime, "%H:%M")
     stopTime_obj = datetime.strptime(stopTime, "%H:%M")
+    # print (f'Cycle: {cycle}; Flow1: {flow1}; Flow2: {flow2}; Flow3: {flow3}; Area: {area}; Start time: {startTime}; Stop time: {stopTime}')
     startTime = startTime_obj.hour * 3600 + startTime_obj.minute * 60
     stopTime = stopTime_obj.hour * 3600 + stopTime_obj.minute * 60
     duration = stopTime - startTime
@@ -94,7 +94,7 @@ def runCycles(cycle, flow1, flow2, flow3, area, startTime, stopTime):
     area = int (area)
     while True:
         current_time = time.localtime().tm_hour * 3600 + time.localtime().tm_min * 60 + time.localtime().tm_sec + 3600*6
-        # print (f'Current time: {current_time}')
+        print (f'Current time: {current_time}')
         if current_time >= startTime and current_time <= stopTime and cycle > 0:
             while True:
                 flag = fsm_auto(flow1, flow2, flow3, area, client)
@@ -113,27 +113,26 @@ def listenSensor():
     global temp_value, moisture_value
     # temp_value = readTemperature()
     # moisture_value = readMoisture()
-    temp_value = readTemperature()
-    moisture_value = readMoisture()
-    print (f'The value of temp is {temp_value}')
-    print (f'The value of moisture is {moisture_value}')
+    temp_value = random.randint(20, 40)
+    moisture_value = random.randint(30, 90)
+    # print (f'The value of temp is {temp_value}')
+    # print (f'The value of moisture is {moisture_value}')
 
 def sendPredict():
     # global client
-    if sendPredict_flag:
+    if is_sendPredict_flag():
         # print ("  predict ...")
         client.publish("announceUser", 1)
-        sendPredict_flag = False
+        set_sendPredict_flag(False)
 
 def runCommand():
-    global runCommand_flag
     # global runCommand_flag, cycle, flow1, flow2, flow3, area, startTime, stopTime
-    if runCommand_flag:
+    if is_runCommand_flag():
         print("Running command ...")
-        cycleThread = threading.Thread(target=runCycles, args=(cycle, flow1, flow2, flow3, area, startTime, stopTime))
+        cycleThread = threading.Thread(target=runCycles, args=(get_schedule('cycle'), get_schedule('flow1'), get_schedule('flow2'), get_schedule('flow3'), get_schedule('area'), get_schedule('startTime'), get_schedule('stopTime')))
         cycleThread.start()
         print ('Start thread successfully')
-        runCommand_flag = False
+        set_runCommand_flag(False)
 
 def prepare_model ():
     print ("Preparing model ...")
@@ -141,14 +140,14 @@ def prepare_model ():
     model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = prepare_cnn_model(temp_value, moisture_value)
 
 def predict():
-    global sendPredict_flag, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features 
+    global model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features 
     predict_temp_1, predict_mois_1,predict_temp_2, predict_mois_2,predict_temp_3, predict_mois_3, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = predict_value(temp_value, moisture_value, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features)
     # print (f'Predicted temp: {predict_temp_1}, {predict_temp_2}, {predict_temp_3} Predicted mois: {predict_mois_1}, {predict_mois_2}, {predict_mois_3}')
     if predict_temp_1 > 30 and predict_temp_2 > 30 and predict_temp_3 > 30:
-        sendPredict_flag = True
+        set_sendPredict_flag(True)
     elif predict_mois_1 > 70 and predict_mois_2 > 70 and predict_mois_3 > 70:
-        sendPredict_flag = True
-        
+        set_sendPredict_flag(True)
+
         
 SCH_Add_Task(listenSensor, 0, 3)
 SCH_Add_Task (prepare_model, 0, 0)
