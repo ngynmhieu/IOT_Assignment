@@ -21,14 +21,14 @@ def fsm_auto(flow1, flow2, flow3, area, client):
     global status, start_time, end_time
     if (status == INIT):
         # client.publish("deviceActive", 0)
-        publish_deviceActive(0)
+        mqtt_publish ('deviceActive', 0)
         start_time = time.time()
         print ("INIT")
         status = MIX1
         # client.publish("deviceActive", 1)
         print ("MIX1")
         setMixer1(1)
-        publish_deviceActive( 1)
+        mqtt_publish ('deviceActive', 1)
         
         
     elif (status == MIX1):
@@ -41,7 +41,7 @@ def fsm_auto(flow1, flow2, flow3, area, client):
             print ("MIX2")
             setMixer1(0)
             setMixer2(1)
-            publish_deviceActive(2)
+            mqtt_publish('deviceActive', 2)
             
     elif (status == MIX2):
         #DO SOMETHING
@@ -53,7 +53,7 @@ def fsm_auto(flow1, flow2, flow3, area, client):
             setMixer2(0)
             setMixer3(1)
             # client.publish("deviceActive", 3)
-            publish_deviceActive(3)
+            mqtt_publish ('deviceActive', 3)
             
     elif (status == MIX3):
         #DO SOMETHING
@@ -65,7 +65,7 @@ def fsm_auto(flow1, flow2, flow3, area, client):
             setPump_in(1)
             status = PUMP_IN
             # client.publish("deviceActive", 4)
-            publish_deviceActive( 4)
+            mqtt_publish ('deviceActive', 4)
               
     elif (status == PUMP_IN):
         #DO SOMETHING
@@ -77,15 +77,15 @@ def fsm_auto(flow1, flow2, flow3, area, client):
             if area == 1:
                 print ('SELECTOR1')
                 setSelector1(1)
-                publish_deviceActive(5)
+                mqtt_publish('deviceActive', 5)
             elif area == 2:
                 print ('SELECTOR2')
                 setSelector2(1)
-                publish_deviceActive(6)
+                mqtt_publish('deviceActive', 6)
             elif area == 3:
                 print ('SELECTOR3')
                 setSelector3(1)
-                publish_deviceActive( 7)
+                mqtt_publish('deviceActive', 7)
     elif (status == SELECTOR):
         # print ('SELECTOR')
         start_time = time.time()
@@ -95,7 +95,7 @@ def fsm_auto(flow1, flow2, flow3, area, client):
         setSelector1(0)
         setSelector2(0)
         setSelector3(0)
-        publish_deviceActive(8)
+        mqtt_publish('deviceActive', 8)
         
     elif (status == PUMP_OUT):
         # print ('PUMP_OUT')
@@ -103,12 +103,12 @@ def fsm_auto(flow1, flow2, flow3, area, client):
         print ('NEXT_CYCLE')
         setPump_out(0)
         status = NEXT_CYCLE
-        publish_deviceActive( 9)
+        mqtt_publish('deviceActive', 9)
         
     elif (status == NEXT_CYCLE):
         print ('INIT')
         status = INIT
-        publish_deviceActive(0)
+        mqtt_publish ('deviceActive', 0)
         return 1
     else:
         print("Error: Unknown state")
