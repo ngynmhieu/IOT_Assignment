@@ -69,15 +69,17 @@ def listenSensor():
     global temp_value, moisture_value
     temp_value = readTemperature()/100
     moisture_value = readMoisture()
-    client.publish("temp", temp_value)
-    client.publish("moist", moisture_value)
+    # client.publish("temp", temp_value)
+    # client.publish("moist", moisture_value)
+    mqtt_publish('temp', temp_value)
+    mqtt_publish('moist', moisture_value)
 
-def sendPredict():
-    # global client
-    if is_sendPredict_flag():
-        print ("Sending predict ...")
-        client.publish("announceUser", 1)
-        set_sendPredict_flag(False)
+# def sendPredict():
+#     # global client
+#     if is_sendPredict_flag():
+#         print ("Sending predict ...")
+#         client.publish("announceUser", 1)
+#         set_sendPredict_flag(False)
 
 def runCommand():
     if is_runCommand_flag():
@@ -95,20 +97,25 @@ def prepare_model ():
 def predict():
     global model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features 
     predict_temp_1, predict_mois_1,predict_temp_2, predict_mois_2,predict_temp_3, predict_mois_3, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = predict_value(temp_value, moisture_value, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features)
-    client.publish("temp_predict", int(predict_temp_1))
-    client.publish("moist_predict", int (predict_mois_1))
+    # client.publish("temp_predict", int(predict_temp_1))
+    # client.publish("moist_predict", int (predict_mois_1))
+    mqtt_publish('temp_predict', int(predict_temp_1))
+    mqtt_publish('moist_predict', int (predict_mois_1))
     if predict_temp_1 > 30 and predict_temp_2 > 30 and predict_temp_3 > 30:
-        set_sendPredict_flag(True)
+        # set_sendPredict_flag(True)
+        mqtt_publish('announceUser', 1)
     elif predict_mois_1 > 70 and predict_mois_2 > 70 and predict_mois_3 > 70:
-        set_sendPredict_flag(True)
+        mqtt_publish('announceUser', 1)
+        # set_sendPredict_flag(True)
     elif temp_value > 30 and moisture_value > 70:
-        set_sendPredict_flag(True)
+        mqtt_publish('announceUser', 1)
+        # set_sendPredict_flag(True)
 
         
 SCH_Add_Task(listenSensor, 0, 3)
 SCH_Add_Task (prepare_model, 0, 0)
 SCH_Add_Task (predict, 0, 3)
-SCH_Add_Task(sendPredict, 0, 5)
+# SCH_Add_Task(sendPredict, 0, 5)
 SCH_Add_Task (runCommand, 0, 3)
 while True:
     SCH_Dispatch_Tasks()

@@ -98,49 +98,49 @@ pumpout_ON  = [8, 5, 0, 0, 255, 0, 149, 159]
 pumpout_OFF = [8, 5, 0, 0, 0, 0, 240, 47]
 
 #Hieu
-def setDevice1(state):
+def setMixer1(state):
     if state == True:
         ser.write(mixer1_ON)
     else:
         ser.write(mixer1_OFF)
 
-def setDevice2(state):
+def setMixer2(state):
     if state == True:
         ser.write(mixer2_ON)
     else:
         ser.write(mixer2_OFF)        
 
-def setDevice3(state):
+def setMixer3(state):
     if state == True:
         ser.write(mixer3_ON)
     else:
         ser.write(mixer3_OFF)
 
-def setDevice4(state):
+def setSelector1(state):
     if state == True:
         ser.write(selector1_ON)
     else:
         ser.write(selector1_OFF)
 
-def setDevice5(state):
+def setSelector2(state):
     if state == True:
         ser.write(selector2_ON)
     else:
         ser.write(selector2_OFF)
 
-def setDevice6(state):
+def setSelector3(state):
     if state == True:
         ser.write(selector3_ON)
     else:
         ser.write(selector3_OFF)
 
-def setDevice7(state):
+def setPump_in(state):
     if state == True:
         ser.write(pumpin_ON)
     else:
         ser.write(pumpin_OFF)
 
-def setDevice8(state):
+def setPump_out(state):
     if state == True:
         ser.write(pumpout_ON)
     else:

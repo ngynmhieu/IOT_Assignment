@@ -4,6 +4,7 @@ from Adafruit_IO import MQTTClient
 import time
 import random
 from all import *
+from scheduler import *
 
 AIO_FEED_IDs = ["command", "announceUser", "deviceActive", "moist", "moist_predict", "temp", "temp_predict"]
 AIO_USERNAME = "IOT_232"
@@ -39,3 +40,54 @@ client.on_message = message
 client.on_subscribe = subscribe
 client.connect()
 client.loop_background()
+
+sending_count = 0
+
+def publish_command (data):
+    print ("Publishing command ...")
+    client.publish("command", json.dumps(data))
+
+def publish_announceUser (data):
+    print ("Publishing announceUser ...")
+    client.publish("announceUser", data)
+    
+def publish_deviceActive (data):
+    print ("Publishing deviceActive ...")
+    client.publish("deviceActive", data)
+    
+def publish_moist (data):
+    print ("Publishing moist ...")
+    client.publish("moist", data)
+
+def publish_moist_predict (data):
+    print  ("Publishing moist_predict ...")
+    client.publish("moist_predict", data)
+    
+def publish_temp (data):
+    print ("Publishing temp ...")
+    client.publish("temp", data)
+    
+def publish_temp_predict (data):
+    print ("Publishing temp_predict ...")
+    client.publish("temp_predict", data)
+    
+def mqtt_publish (topic, data):
+    global sending_count
+    if (topic == "command"):
+        SCH_Add_Task(publish_command(data), sending_count, 0)
+    elif (topic == "announceUser"):
+        SCH_Add_Task(publish_announceUser(data), sending_count, 0)
+    elif (topic == "deviceActive"):
+        SCH_Add_Task(publish_deviceActive(data), sending_count, 0)
+    elif (topic == "moist"):
+        SCH_Add_Task(publish_moist(data), sending_count, 0)
+    elif (topic == "moist_predict"):
+        SCH_Add_Task(publish_moist_predict(data), sending_count, 0)
+    elif (topic == "temp"):
+        SCH_Add_Task(publish_temp(data), sending_count, 0)
+    elif (topic == "temp_predict"):
+        SCH_Add_Task(publish_temp_predict(data), sending_count, 0)
+    sending_count += 1
+    time.sleep(1)
+    sending_count -= 1    
+    

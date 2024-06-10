@@ -1,6 +1,6 @@
 from all import *
 from physical import *
-
+from mqttHelper import *
 
 
 INIT = 0
@@ -20,85 +20,95 @@ end_time = 0
 def fsm_auto(flow1, flow2, flow3, area, client):
     global status, start_time, end_time
     if (status == INIT):
-        client.publish("deviceActive", 0)
+        # client.publish("deviceActive", 0)
+        mqtt_publish ('deviceActive', 0)
         start_time = time.time()
-        # print ("INIT")
+        print ("INIT")
         status = MIX1
-        client.publish("deviceActive", 1)
+        # client.publish("deviceActive", 1)
+        print ("MIX1")
+        setMixer1(1)
+        mqtt_publish ('deviceActive', 1)
         
         
     elif (status == MIX1):
         #DO SOMETHING
-        setDevice1(1)
         end_time = time.time()
-        # print ("MIX1")
         if (end_time - start_time >= 5):
             start_time = time.time()
             status = MIX2
-            setDevice1(0)
-            client.publish("deviceActive", 2)
+            # client.publish("deviceActive", 2)
+            print ("MIX2")
+            setMixer1(0)
+            setMixer2(1)
+            mqtt_publish('deviceActive', 2)
             
     elif (status == MIX2):
         #DO SOMETHING
-        # print ("MIX2")
-        setDevice2(1)
         end_time = time.time()
         if (end_time - start_time >= 5):
             start_time = time.time()
             status = MIX3
-            setDevice2(0)
-            client.publish("deviceActive", 3)
+            print ("MIX3")
+            setMixer2(0)
+            setMixer3(1)
+            # client.publish("deviceActive", 3)
+            mqtt_publish ('deviceActive', 3)
             
     elif (status == MIX3):
-        # print ('MIX3')
         #DO SOMETHING
-        setDevice3(1)
         end_time = time.time()
         if (end_time - start_time >= 5):
             start_time = time.time()
-            setDevice3(0)
+            print ("PUMP_IN")
+            setMixer3(0)
+            setPump_in(1)
             status = PUMP_IN
-            client.publish("deviceActive", 4)
+            # client.publish("deviceActive", 4)
+            mqtt_publish ('deviceActive', 4)
               
     elif (status == PUMP_IN):
         #DO SOMETHING
-        # print ('PUMP_IN')
-        setDevice7(1)
         end_time = time.time()
         if (end_time - start_time >= 5):
             start_time = time.time()
-            setDevice7(0)
+            setPump_in(0)
             status = SELECTOR
             if area == 1:
-                setDevice4(1)
+                print ('SELECTOR1')
+                setSelector1(1)
+                mqtt_publish('deviceActive', 5)
             elif area == 2:
-                setDevice5(1)
+                print ('SELECTOR2')
+                setSelector2(1)
+                mqtt_publish('deviceActive', 6)
             elif area == 3:
-                setDevice4(1)
-                
+                print ('SELECTOR3')
+                setSelector3(1)
+                mqtt_publish('deviceActive', 7)
     elif (status == SELECTOR):
         # print ('SELECTOR')
         start_time = time.time()
         status = PUMP_OUT
-        if area == 1:
-            setDevice4(0)
-        elif area == 2:
-            setDevice5(0)
-        elif area == 3:
-            setDevice6(0)
-        client.publish("deviceActive", 8)
+        print ('PUMP_OUT')
+        setPump_out(1)
+        setSelector1(0)
+        setSelector2(0)
+        setSelector3(0)
+        mqtt_publish('deviceActive', 8)
         
     elif (status == PUMP_OUT):
         # print ('PUMP_OUT')
-        setDevice8(1)
         start_time = time.time()
-        setDevice8(0)
+        print ('NEXT_CYCLE')
+        setPump_out(0)
         status = NEXT_CYCLE
-        client.publish("deviceActive", 9)
+        mqtt_publish('deviceActive', 9)
         
     elif (status == NEXT_CYCLE):
+        print ('INIT')
         status = INIT
-        
+        mqtt_publish ('deviceActive', 0)
         return 1
     else:
         print("Error: Unknown state")
