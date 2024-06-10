@@ -1,6 +1,18 @@
 from all import *
 from physical import *
 
+
+
+INIT = 0
+MIX1 = 1
+MIX2 = 2
+MIX3 = 3
+PUMP_IN = 4
+SELECTOR = 5
+PUMP_OUT = 6
+NEXT_CYCLE = 7
+
+
 status = INIT
 start_time = 0
 end_time = 0

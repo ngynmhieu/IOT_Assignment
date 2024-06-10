@@ -1,5 +1,6 @@
 from all import *
 from scheduler import *
+from cnn_ai import *
 from controller import *
 # from cnn_ai import *
 import sys
@@ -11,6 +12,7 @@ import threading
 from datetime import datetime
 from fsm_auto import *
 from physical import *
+from all import *
 
 # AIO_FEED_IDs = ["command", "announceUser", "deviceActive"]
 # AIO_USERNAME = "IOT_232"
@@ -21,17 +23,7 @@ temp_value = 0
 moisture_value = 0
 
 
-cycle = None
-flow1 = None
-flow2 = None
-flow3 = None
-area = None
-startTime = None
-stopTime = None
 
-
-sendPredict_flag = False
-runCommand_flag = False
 # Predict_lock = threading.Lock()
 
 
@@ -127,14 +119,15 @@ def listenSensor():
     print (f'The value of moisture is {moisture_value}')
 
 def sendPredict():
-    global sendPredict_flag, client
+    # global client
     if sendPredict_flag:
         # print ("  predict ...")
         client.publish("announceUser", 1)
         sendPredict_flag = False
 
 def runCommand():
-    global runCommand_flag, cycle, flow1, flow2, flow3, area, startTime, stopTime
+    global runCommand_flag
+    # global runCommand_flag, cycle, flow1, flow2, flow3, area, startTime, stopTime
     if runCommand_flag:
         print("Running command ...")
         cycleThread = threading.Thread(target=runCycles, args=(cycle, flow1, flow2, flow3, area, startTime, stopTime))
