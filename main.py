@@ -72,6 +72,7 @@ def listenSensor():
     # client.publish("temp", temp_value)
     # client.publish("moist", moisture_value)
     mqtt_publish('temp', temp_value)
+    time.sleep(1)
     mqtt_publish('moist', moisture_value)
 
 # def sendPredict():
@@ -100,6 +101,7 @@ def predict():
     # client.publish("temp_predict", int(predict_temp_1))
     # client.publish("moist_predict", int (predict_mois_1))
     mqtt_publish('temp_predict', int(predict_temp_1))
+    time.sleep(1)
     mqtt_publish('moist_predict', int (predict_mois_1))
     if predict_temp_1 > 30 and predict_temp_2 > 30 and predict_temp_3 > 30:
         # set_sendPredict_flag(True)
@@ -112,9 +114,9 @@ def predict():
         # set_sendPredict_flag(True)
 
         
-SCH_Add_Task(listenSensor, 0, 3)
+SCH_Add_Task(listenSensor, 0, 4)
 SCH_Add_Task (prepare_model, 0, 0)
-SCH_Add_Task (predict, 0, 3)
+SCH_Add_Task (predict, 0, 4)
 # SCH_Add_Task(sendPredict, 0, 5)
 SCH_Add_Task (runCommand, 0, 3)
 while True:

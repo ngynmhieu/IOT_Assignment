@@ -22,9 +22,9 @@ SCH_MAX_TASKS = 10
 def SCH_Add_Task(func, delay, period):
     global worker_id
     worker = Worker(func, delay, period)
-    if (func == None or delay < 0 or period < 0):
-        print (f'Add task {worker_id} with delay {delay} and period {period}')
-        return 0
+    # if (func == None or delay < 0 or period < 0):
+    #     print (f'Add task {worker_id} with delay {delay} and period {period}')
+        # return 0
     worker_id += 1
     worker.worker_id = worker_id
     
@@ -88,6 +88,8 @@ def SCH_Dispatch_Tasks():
         # print (f'TaskID {company.head.worker_id} is running at {time_stamp}')
         company.head.func() # Run worker
         if company.head.period != 0: # periodly worker
+            if company.head.func == None:
+                print (f'Worker {company.head.worker_id} is None')
             SCH_Add_Task(company.head.func, company.head.period, company.head.period)
         SCH_Delete_Task(company.head.worker_id) # Delete worker
         
