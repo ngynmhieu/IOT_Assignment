@@ -67,10 +67,10 @@ def runCycles(cycle, flow1, flow2, flow3, area, startTime, stopTime):
 # MAIN 
 def listenSensor():
     global temp_value, moisture_value
-    temp_value = readTemperature()/1000
+    temp_value = readTemperature()/100
     moisture_value = readMoisture()
-    print (f'Temp: {temp_value}, Moisture: {moisture_value}')
-    
+    client.publish("temp", temp_value)
+    client.publish("moist", moisture_value)
 
 def sendPredict():
     # global client
@@ -95,6 +95,8 @@ def prepare_model ():
 def predict():
     global model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features 
     predict_temp_1, predict_mois_1,predict_temp_2, predict_mois_2,predict_temp_3, predict_mois_3, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = predict_value(temp_value, moisture_value, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features)
+    client.publish("temp_predict", predict_temp_1)
+    client.publish("moist_predict", predict_mois_1)
     if predict_temp_1 > 30 and predict_temp_2 > 30 and predict_temp_3 > 30:
         set_sendPredict_flag(True)
     elif predict_mois_1 > 70 and predict_mois_2 > 70 and predict_mois_3 > 70:

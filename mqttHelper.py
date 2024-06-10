@@ -5,7 +5,7 @@ import time
 import random
 from all import *
 
-AIO_FEED_IDs = ["command", "announceUser", "deviceActive"]
+AIO_FEED_IDs = ["command", "announceUser", "deviceActive", "moist", "moist_predict", "temp", "temp_predict"]
 AIO_USERNAME = "IOT_232"
 AIO_KEY = ""  
 
