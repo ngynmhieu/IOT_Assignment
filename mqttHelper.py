@@ -43,9 +43,9 @@ client.loop_background()
 
 sending_count = 0
 
-def publish_command (data):
-    print ("Publishing command ...")
-    client.publish("command", json.dumps(data))
+# def publish_command (data):
+#     print ("Publishing command ...")
+#     client.publish("command", json.dumps(data))
 
 def publish_announceUser (data):
     print ("Publishing announceUser ...")
@@ -73,9 +73,9 @@ def publish_temp_predict (data):
     
 def mqtt_publish (topic, data):
     global sending_count
-    if (topic == "command"):
-        SCH_Add_Task(publish_command(data), sending_count, 0)
-    elif (topic == "announceUser"):
+    # if (topic == "command"):
+    #     SCH_Add_Task(publish_command(data), sending_count, 0)
+    if (topic == "announceUser"):
         SCH_Add_Task(publish_announceUser(data), sending_count, 0)
     elif (topic == "deviceActive"):
         SCH_Add_Task(publish_deviceActive(data), sending_count, 0)
@@ -89,5 +89,6 @@ def mqtt_publish (topic, data):
         SCH_Add_Task(publish_temp_predict(data), sending_count, 0)
     sending_count += 1
     time.sleep(1)
-    sending_count -= 1    
+    if (sending_count > 0):
+        sending_count -= 1    
     
