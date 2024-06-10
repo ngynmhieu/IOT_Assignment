@@ -97,10 +97,35 @@ pumpin_OFF = [7, 5, 0, 0, 0, 0, 81, 195]
 pumpout_ON  = [8, 5, 0, 0, 255, 0, 149, 159]
 pumpout_OFF = [8, 5, 0, 0, 0, 0, 240, 47]
 
+
+def send_command_and_confirm(ser, command):
+
+    # Convert command list to bytes
+    command_bytes = bytes(command)
+    
+    ser.reset_input_buffer()
+    ser.reset_output_buffer()
+    
+    ser.write(command_bytes)
+
+    time.sleep(1)
+    if ser.inWaiting() > 0:
+        response = ser.read(ser.inWaiting())
+        if response == command_bytes:
+            print("Command executed successfully.")
+            return True
+        else:
+            print("Command execution failed.")
+    else:
+        print("No response from device.")
+
+    return False
+
 #Hieu
 def setMixer1(state):
     if state == True:
-        ser.write(mixer1_ON)
+        # ser.write(mixer1_ON)
+        send_command_and_confirm(ser, mixer1_ON)
     else:
         ser.write(mixer1_OFF)
 
