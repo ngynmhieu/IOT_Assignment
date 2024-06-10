@@ -22,6 +22,9 @@ SCH_MAX_TASKS = 10
 def SCH_Add_Task(func, delay, period):
     global worker_id
     worker = Worker(func, delay, period)
+    if (func == None or delay < 0 or period < 0):
+        print (f'Add task {worker_id} with delay {delay} and period {period}')
+        return 0
     worker_id += 1
     worker.worker_id = worker_id
     
