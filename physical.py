@@ -44,29 +44,29 @@ def readMoisture():
     return serial_read_data(ser)
 #test
 
-mixer1_ON  = [1, 6, 0, 1, 255, 0, 221, 250]
-mixer1_OFF = [1, 5, 0, 0, 0, 0, 137, 202]
+mixer1_ON  = [1, 6, 0, 0, 0, 255, 201, 138]
+mixer1_OFF = [1, 6, 0, 0, 0, 0, 137, 202]
 
-mixer2_ON = [2, 6, 0, 0, 255, 0, 200, 9]
-mixer2_OFF = [2, 5, 0, 0, 0, 0, 137, 249]
+mixer2_ON = [2, 6, 0, 0, 0, 255, 201, 185]
+mixer2_OFF = [2, 6, 0, 0, 0, 0, 137, 249]
 
-mixer3_ON  = [3, 5, 0, 0, 255, 0, 45, 250]
-mixer3_OFF = [3, 5, 0, 0, 0, 0, 124, 10]
+mixer3_ON  = [3, 6, 0, 0, 0, 255, 200, 104]
+mixer3_OFF = [3, 6, 0, 0, 0, 0, 136, 40]
 
-selector1_ON  = [4, 5, 0, 0, 255, 0, 108, 15]
-selector1_OFF = [4, 5, 0, 0, 0, 0, 61, 207]
+selector1_ON  = [4, 6, 0, 0, 0, 255, 201, 223]
+selector1_OFF = [4, 6, 0, 0, 0, 0, 137, 159]
 
-selector2_ON  = [5, 5, 0, 0, 255, 0, 61, 207]
-selector2_OFF = [5, 5, 0, 0, 0, 0, 108, 15]
+selector2_ON  = [5, 6, 0, 0, 0, 255, 200, 14]
+selector2_OFF = [5, 6, 0, 0, 0, 0, 136, 78]
 
-selector3_ON  = [6, 5, 0, 0, 255, 0, 13, 223]
-selector3_OFF = [6, 5, 0, 0, 0, 0, 134, 103]
+selector3_ON  = [6, 6, 0, 0, 0, 255, 200, 61]
+selector3_OFF = [6, 6, 0, 0, 0, 0, 136, 125]
 
-pumpin_ON  = [7, 5, 0, 0, 255, 0, 180, 7]
-pumpin_OFF = [7, 5, 0, 0, 0, 0, 81, 195]
+pumpin_ON  = [7, 6, 0, 0, 0, 255, 201, 236]
+pumpin_OFF = [7, 6, 0, 0, 0, 0, 137, 172]
 
-pumpout_ON  = [8, 5, 0, 0, 255, 0, 149, 159]
-pumpout_OFF = [8, 5, 0, 0, 0, 0, 240, 47]
+pumpout_ON  = [8, 6, 0, 0, 0, 255, 201, 19]
+pumpout_OFF = [8, 6, 0, 0, 0, 0, 137, 83]
 
 
 def send_command_and_confirm(ser, command):
