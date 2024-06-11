@@ -36,8 +36,8 @@ def fsm_auto(flow1, flow2, flow3, area, client):
             start_time = time.time()
             status = MIX2
             print ("MIX2")
-            setMixer1(ser,False)
-            setMixer2(True)
+            setMixer1(ser, False)
+            setMixer2(ser, True)
             publish_deviceActive(2)
             
     elif (status == MIX2):
@@ -47,7 +47,7 @@ def fsm_auto(flow1, flow2, flow3, area, client):
             start_time = time.time()
             status = MIX3
             print ("MIX3")
-            setMixer2(False)
+            setMixer2(ser, False)
             setMixer3(True)
             publish_deviceActive(3)
             

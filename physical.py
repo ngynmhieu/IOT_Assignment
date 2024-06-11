@@ -136,11 +136,13 @@ def setMixer1(ser, state):
         result = send_command_and_confirm(ser, mixer1_OFF)
         print("Mixer 1 OFF:", "Success" if result else "Failed")
 
-def setMixer2(state):
-    if state == True:
-        ser.write(mixer2_ON)
+def setMixer2(ser, state):
+    if state:
+        result = send_command_and_confirm(ser, mixer2_ON)
+        print("Mixer 2 ON:", "Success" if result else "Failed")
     else:
-        ser.write(mixer2_OFF)        
+        result = send_command_and_confirm(ser, mixer2_OFF)
+        print("Mixer 2 OFF:", "Success" if result else "Failed")     
 
 def setMixer3(state):
     if state == True:
