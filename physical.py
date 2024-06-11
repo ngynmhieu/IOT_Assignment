@@ -68,59 +68,24 @@ pumpin_OFF = [7, 6, 0, 0, 0, 0, 137, 172]
 pumpout_ON  = [8, 6, 0, 0, 0, 255, 201, 19]
 pumpout_OFF = [8, 6, 0, 0, 0, 0, 137, 83]
 
-
-def send_command_and_confirm(ser, command):
-    # Convert command list to bytes
-    command_bytes = bytes(command)
-    
-    # Reset input and output buffer to avoid data corruption
-    ser.reset_input_buffer()
-    ser.reset_output_buffer()
-    
-    # Send the command
-    ser.write(command_bytes)
-
-    # Wait for the device to process the command and respond
-    time.sleep(1)
-    bytesToRead = ser.inWaiting()
-    if bytesToRead > 0:
-        out = ser.read(bytesToRead)
-        data_array = [b for b in out]
-        print(data_array)
-        # Example check: if the response is the echo of the command, confirm success
-        if data_array == command_bytes:
-            print("Command executed successfully.")
-            return True
-        else:
-            print("Command failed or unexpected response.")
-            return False
+ 
+def setMixer1(state):
+    if state == True:
+        ser.write(mixer1_ON)
     else:
-        print("No response from device.")
-        return False
-    
-def setMixer1(ser, state):
-    if state:
-        result = send_command_and_confirm(ser, mixer1_ON)
-        print("Mixer 1 ON:", "Success" if result else "Failed")
-    else:
-        result = send_command_and_confirm(ser, mixer1_OFF)
-        print("Mixer 1 OFF:", "Success" if result else "Failed")
+        ser.write(mixer1_OFF)
 
 def setMixer2(ser, state):
-    if state:
-        result = send_command_and_confirm(ser, mixer2_ON)
-        print("Mixer 2 ON:", "Success" if result else "Failed")
+    if state == True:
+        ser.write(mixer2_ON)
     else:
-        result = send_command_and_confirm(ser, mixer2_OFF)
-        print("Mixer 2 OFF:", "Success" if result else "Failed")     
+        ser.write(mixer2_OFF)    
 
 def setMixer3(ser, state):
-    if state:
-        result = send_command_and_confirm(ser, mixer3_ON)
-        print("Mixer 3 ON:", "Success" if result else "Failed")
+    if state == True:
+        ser.write(mixer3_ON)
     else:
-        result = send_command_and_confirm(ser, mixer3_OFF)
-        print("Mixer 3 OFF:", "Success" if result else "Failed")  
+        ser.write(mixer3_OFF) 
 
 def setSelector1(state):
     if state == True:
