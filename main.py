@@ -48,8 +48,8 @@ def runCycles(cycle, flow1, flow2, flow3, area, startTime, stopTime):
     cycle = int(cycle)
     area = int (area)
     while True:
-        current_time = time.localtime().tm_hour * 3600 + time.localtime().tm_min * 60 + time.localtime().tm_sec 
-        # current_time = time.localtime().tm_hour * 3600 + time.localtime().tm_min * 60 + time.localtime().tm_sec + 3600*6
+        # current_time = time.localtime().tm_hour * 3600 + time.localtime().tm_min * 60 + time.localtime().tm_sec 
+        current_time = time.localtime().tm_hour * 3600 + time.localtime().tm_min * 60 + time.localtime().tm_sec + 3600*6
         # print (f'Current time: {current_time}')
         if current_time >= startTime and current_time <= stopTime and cycle > 0:
             while True:
@@ -67,10 +67,10 @@ def runCycles(cycle, flow1, flow2, flow3, area, startTime, stopTime):
 # MAIN 
 def listenSensor():
     global temp_value, moisture_value
-    temp_value = random.randint(20, 40)
-    moisture_value = random.randint(30, 80)
-    # temp_value = readTemperature()/100
-    # moisture_value = readMoisture()
+    # temp_value = random.randint(20, 40)
+    # moisture_value = random.randint(30, 80)
+    temp_value = readTemperature()/100
+    moisture_value = readMoisture()
     # client.publish("temp", temp_value)
     # client.publish("moist", moisture_value)
     publish_temp(temp_value)
