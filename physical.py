@@ -113,6 +113,7 @@ def send_command_and_confirm(ser, command):
     if bytesToRead > 0:
         out = ser.read(bytesToRead)
         data_array = [b for b in out]
+        print("Data array:", data_array)
         print(data_array)
 
     return False
