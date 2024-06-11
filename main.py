@@ -17,7 +17,6 @@ temp_value = 0
 moisture_value = 0
 
 
-
 # Predict_lock = threading.Lock()
 
 
@@ -71,8 +70,8 @@ def listenSensor():
     moisture_value = readMoisture()
     # client.publish("temp", temp_value)
     # client.publish("moist", moisture_value)
-    mqtt_publish('temp', temp_value)
-    mqtt_publish('moist', moisture_value)
+    publish_temp(temp_value)
+    publish_moist(moisture_value)
 
 # def sendPredict():
 #     # global client
@@ -99,22 +98,26 @@ def predict():
     predict_temp_1, predict_mois_1,predict_temp_2, predict_mois_2,predict_temp_3, predict_mois_3, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = predict_value(temp_value, moisture_value, model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features)
     # client.publish("temp_predict", int(predict_temp_1))
     # client.publish("moist_predict", int (predict_mois_1))
-    mqtt_publish('temp_predict', int(predict_temp_1))
-    mqtt_publish('moist_predict', int (predict_mois_1))
-    if predict_temp_1 > 30 and predict_temp_2 > 30 and predict_temp_3 > 30:
-        # set_sendPredict_flag(True)
-        mqtt_publish('announceUser', 1)
-    elif predict_mois_1 > 70 and predict_mois_2 > 70 and predict_mois_3 > 70:
-        mqtt_publish('announceUser', 1)
-        # set_sendPredict_flag(True)
-    elif temp_value > 30 and moisture_value > 70:
-        mqtt_publish('announceUser', 1)
-        # set_sendPredict_flag(True)
+    if is_publish_flag():
+        set_publish_flag(False)
+        publish_temp_predict(int(predict_temp_1))
+        publish_moist_predict(int (predict_mois_1))
+        if predict_temp_1 > 30 and predict_temp_2 > 30 and predict_temp_3 > 30:
+            # set_sendPredict_flag(True)
+            publish_announceUser(1)
+        elif predict_mois_1 > 70 and predict_mois_2 > 70 and predict_mois_3 > 70:
+            publish_announceUser(1)
+            # set_sendPredict_flag(True)
+        elif temp_value > 30 and moisture_value > 70:
+            publish_announceUser(1)
+            # set_sendPredict_flag(True)
+        time.sleep(1)
+        set_publish_flag(True)
 
         
-SCH_Add_Task(listenSensor, 0, 4)
+SCH_Add_Task(listenSensor, 0, 3)
 SCH_Add_Task (prepare_model, 0, 0)
-SCH_Add_Task (predict, 0, 4)
+SCH_Add_Task (predict, 0, 3)
 # SCH_Add_Task(sendPredict, 0, 5)
 SCH_Add_Task (runCommand, 0, 3)
 while True:

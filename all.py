@@ -14,13 +14,13 @@ startTime = None
 stopTime = None
 
 
-sendPredict_flag = False
-runCommand_flag = False
+publish_flag = False
+runCommand_flag = True
 
-def set_sendPredict_flag (value):
+def set_publish_flag (value):
     # print ("Set sendPredict_flag to ", value)
-    global sendPredict_flag
-    sendPredict_flag = value
+    global publish_flag 
+    publish_flag = value
     
 def set_runCommand_flag (value):
     # print ("Set runCommand_flag to ", value)
@@ -38,8 +38,8 @@ def set_schedule(cycle_t, flow1_t, flow2_t, flow3_t, area_t, startTime_t, stopTi
     startTime = startTime_t
     stopTime = stopTime_t
 
-def is_sendPredict_flag():
-    return sendPredict_flag
+def is_publish_flag():
+    return publish_flag
 
 def is_runCommand_flag():
     return runCommand_flag

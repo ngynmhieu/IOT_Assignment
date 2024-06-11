@@ -47,48 +47,64 @@ sending_count = 1
 #     print ("Publishing command ...")
 #     client.publish("command", json.dumps(data))
 
-def publish_announceUser (data):
-    print ("Publishing announceUser ...")
-    client.publish("announceUser", data)
-    
 def publish_deviceActive (data):
-    print ("Publishing deviceActive ...")
-    client.publish("deviceActive", data)
+    if is_publish_flag():
+        set_publish_flag(False)
+        print ("Publishing deviceActive ...")
+        client.publish("deviceActive", data)
+        time.sleep(1)  # Add a delay
+        set_publish_flag(True)
     
 def publish_moist (data):
-    print ("Publishing moist ...")
-    client.publish("moist", data)
+    if is_publish_flag():
+        set_publish_flag(False)
+        print ("Publishing moist ...")
+        client.publish("moist", data)
+        time.sleep(1)  # Add a delay
+        set_publish_flag(True)
 
 def publish_moist_predict (data):
-    print  ("Publishing moist_predict ...")
-    client.publish("moist_predict", data)
+    if is_publish_flag():
+        set_publish_flag(False)
+        print  ("Publishing moist_predict ...")
+        client.publish("moist_predict", data)
+        time.sleep(1)  # Add a delay
+        set_publish_flag(True)
     
 def publish_temp (data):
-    print ("Publishing temp ...")
-    client.publish("temp", data)
+    if is_publish_flag():
+        set_publish_flag(False)
+        print ("Publishing temp ...")
+        client.publish("temp", data)
+        time.sleep(1)  # Add a delay
+        set_publish_flag(True)
     
 def publish_temp_predict (data):
-    print ("Publishing temp_predict ...")
-    client.publish("temp_predict", data)
+    if is_publish_flag():
+        set_publish_flag(False)
+        print ("Publishing temp_predict ...")
+        client.publish("temp_predict", data)
+        time.sleep(1)  # Add a delay
+        set_publish_flag(True)
     
-def mqtt_publish (topic, data):
-    global sending_count
-    # if (topic == "command"):
-    #     SCH_Add_Task(publish_command(data), sending_count, 0)
-    if (topic == "announceUser"):
-        SCH_Add_Task(publish_announceUser(data), sending_count, 0)
-    elif (topic == "deviceActive"):
-        SCH_Add_Task(publish_deviceActive(data), sending_count, 0)
-    elif (topic == "moist"):
-        SCH_Add_Task(publish_moist(data), sending_count, 0)
-    elif (topic == "moist_predict"):
-        SCH_Add_Task(publish_moist_predict(data), sending_count, 0)
-    elif (topic == "temp"):
-        SCH_Add_Task(publish_temp(data), sending_count, 0)
-    elif (topic == "temp_predict"):
-        SCH_Add_Task(publish_temp_predict(data), sending_count, 0)
-    sending_count += 1
-    time.sleep(1)
-    if (sending_count > 1):
-        sending_count -= 1    
+# def mqtt_publish (topic, data):
+#     global sending_count
+#     # if (topic == "command"):
+#     #     SCH_Add_Task(publish_command(data), sending_count, 0)
+#     if (topic == "announceUser"):
+#         SCH_Add_Task(publish_announceUser(data), sending_count, 0)
+#     elif (topic == "deviceActive"):
+#         SCH_Add_Task(publish_deviceActive(data), sending_count, 0)
+#     elif (topic == "moist"):
+#         SCH_Add_Task(publish_moist(data), sending_count, 0)
+#     elif (topic == "moist_predict"):
+#         SCH_Add_Task(publish_moist_predict(data), sending_count, 0)
+#     elif (topic == "temp"):
+#         SCH_Add_Task(publish_temp(data), sending_count, 0)
+#     elif (topic == "temp_predict"):
+#         SCH_Add_Task(publish_temp_predict(data), sending_count, 0)
+#     sending_count += 1
+#     time.sleep(1)
+#     if (sending_count > 1):
+#         sending_count -= 1    
     
