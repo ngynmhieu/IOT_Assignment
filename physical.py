@@ -51,7 +51,6 @@ def serial_read_data(ser):
     if bytesToRead > 0:
         out = ser.read(bytesToRead)
         data_array = list(out)
-        print("Data array:", data_array)
         if len(data_array) >= 7:
             value_bytes = data_array[3:5]  
             value = int.from_bytes(value_bytes, byteorder='big') 
@@ -99,32 +98,43 @@ pumpout_OFF = [8, 5, 0, 0, 0, 0, 240, 47]
 
 
 def send_command_and_confirm(ser, command):
-
     # Convert command list to bytes
     command_bytes = bytes(command)
     
+    # Reset input and output buffer to avoid data corruption
     ser.reset_input_buffer()
     ser.reset_output_buffer()
     
+    # Send the command
     ser.write(command_bytes)
 
+    # Wait for the device to process the command and respond
     time.sleep(1)
+    
+    # Check if there are bytes to read
     bytesToRead = ser.inWaiting()
     if bytesToRead > 0:
-        out = ser.read(bytesToRead)
-        data_array = [b for b in out]
-        print("Data array:", data_array)
-        print(data_array)
+        response = ser.read(bytesToRead)
+        print("Response received:", response)
 
-    return False
-
-#Hieu
-def setMixer1(state):
-    if state == True:
-        # ser.write(mixer1_ON)
-        send_command_and_confirm(ser, mixer1_ON)
+        # Example check: if the response is the echo of the command, confirm success
+        if response == command_bytes:
+            print("Command executed successfully.")
+            return True
+        else:
+            print("Command failed or unexpected response.")
+            return False
     else:
-        ser.write(mixer1_OFF)
+        print("No response from device.")
+        return False
+    
+def setMixer1(ser, state):
+    if state:
+        result = send_command_and_confirm(ser, mixer1_ON)
+        print("Mixer 1 ON:", "Success" if result else "Failed")
+    else:
+        result = send_command_and_confirm(ser, mixer1_OFF)
+        print("Mixer 1 OFF:", "Success" if result else "Failed")
 
 def setMixer2(state):
     if state == True:
