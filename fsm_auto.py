@@ -27,7 +27,7 @@ def fsm_auto(flow1, flow2, flow3, area, client):
         status = MIX1
         # client.publish("deviceActive", 1)
         print ("MIX1")
-        setMixer1(1)
+        #setMixer1(1)
         publish_deviceActive(1)
         
         
@@ -39,8 +39,8 @@ def fsm_auto(flow1, flow2, flow3, area, client):
             status = MIX2
             # client.publish("deviceActive", 2)
             print ("MIX2")
-            setMixer1(0)
-            setMixer2(1)
+            #setMixer1(0)
+            #setMixer2(1)
             publish_deviceActive(2)
             
     elif (status == MIX2):
@@ -50,8 +50,8 @@ def fsm_auto(flow1, flow2, flow3, area, client):
             start_time = time.time()
             status = MIX3
             print ("MIX3")
-            setMixer2(0)
-            setMixer3(1)
+            #setMixer2(0)
+            #setMixer3(1)
             # client.publish("deviceActive", 3)
             publish_deviceActive(3)
             
@@ -61,8 +61,8 @@ def fsm_auto(flow1, flow2, flow3, area, client):
         if (end_time - start_time >= 5):
             start_time = time.time()
             print ("PUMP_IN")
-            setMixer3(0)
-            setPump_in(1)
+            #setMixer3(0)
+            #setPump_in(1)
             status = PUMP_IN
             # client.publish("deviceActive", 4)
             publish_deviceActive(4)
@@ -72,36 +72,36 @@ def fsm_auto(flow1, flow2, flow3, area, client):
         end_time = time.time()
         if (end_time - start_time >= 5):
             start_time = time.time()
-            setPump_in(0)
+            #setPump_in(0)
             status = SELECTOR
             if area == 1:
                 print ('SELECTOR1')
-                setSelector1(1)
+                #setSelector1(1)
                 publish_deviceActive(5)
             elif area == 2:
                 print ('SELECTOR2')
-                setSelector2(1)
+                #setSelector2(1)
                 publish_deviceActive(6)
             elif area == 3:
                 print ('SELECTOR3')
-                setSelector3(1)
+                #setSelector3(1)
                 publish_deviceActive(7)
     elif (status == SELECTOR):
         # print ('SELECTOR')
         start_time = time.time()
         status = PUMP_OUT
         print ('PUMP_OUT')
-        setPump_out(1)
-        setSelector1(0)
-        setSelector2(0)
-        setSelector3(0)
+        #setPump_out(1)
+        #setSelector1(0)
+        #setSelector2(0)
+        #setSelector3(0)
         publish_deviceActive(8)
         
     elif (status == PUMP_OUT):
         # print ('PUMP_OUT')
         start_time = time.time()
         print ('NEXT_CYCLE')
-        setPump_out(0)
+        #setPump_out(0)
         status = NEXT_CYCLE
         publish_deviceActive(9)
         

@@ -14,8 +14,8 @@ startTime = None
 stopTime = None
 
 
-publish_flag = False
-runCommand_flag = True
+publish_flag = True
+runCommand_flag = False
 
 def set_publish_flag (value):
     # print ("Set sendPredict_flag to ", value)

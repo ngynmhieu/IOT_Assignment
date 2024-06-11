@@ -8,7 +8,7 @@ from scheduler import *
 
 AIO_FEED_IDs = ["command", "announceUser", "deviceActive", "moist", "moist_predict", "temp", "temp_predict"]
 AIO_USERNAME = "IOT_232"
-AIO_KEY = ""  
+AIO_KEY = "aio_tSwT46EEjpikgWpLqYMybCEe6js0"  
 
 def connected(client):
     print("Ket noi thanh cong ...")
@@ -47,6 +47,15 @@ sending_count = 1
 #     print ("Publishing command ...")
 #     client.publish("command", json.dumps(data))
 
+
+def publish_announceUser (data):
+    if is_publish_flag():
+        set_publish_flag(False)
+        print ("Publishing announceUser ...")
+        client.publish("announceUser", data)
+        time.sleep(1)  # Add a delay
+        set_publish_flag(True)
+
 def publish_deviceActive (data):
     if is_publish_flag():
         set_publish_flag(False)
@@ -60,7 +69,7 @@ def publish_moist (data):
         set_publish_flag(False)
         print ("Publishing moist ...")
         client.publish("moist", data)
-        time.sleep(1)  # Add a delay
+        time.sleep(3)  # Add a delay
         set_publish_flag(True)
 
 def publish_moist_predict (data):
@@ -68,7 +77,7 @@ def publish_moist_predict (data):
         set_publish_flag(False)
         print  ("Publishing moist_predict ...")
         client.publish("moist_predict", data)
-        time.sleep(1)  # Add a delay
+        time.sleep(3)  # Add a delay
         set_publish_flag(True)
     
 def publish_temp (data):
@@ -76,7 +85,7 @@ def publish_temp (data):
         set_publish_flag(False)
         print ("Publishing temp ...")
         client.publish("temp", data)
-        time.sleep(1)  # Add a delay
+        time.sleep(3)  # Add a delay
         set_publish_flag(True)
     
 def publish_temp_predict (data):
@@ -84,7 +93,7 @@ def publish_temp_predict (data):
         set_publish_flag(False)
         print ("Publishing temp_predict ...")
         client.publish("temp_predict", data)
-        time.sleep(1)  # Add a delay
+        time.sleep(3)  # Add a delay
         set_publish_flag(True)
     
 # def mqtt_publish (topic, data):
