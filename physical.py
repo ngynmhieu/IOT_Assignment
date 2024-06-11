@@ -82,15 +82,13 @@ def send_command_and_confirm(ser, command):
 
     # Wait for the device to process the command and respond
     time.sleep(1)
-    
-    # Check if there are bytes to read
     bytesToRead = ser.inWaiting()
     if bytesToRead > 0:
         out = ser.read(bytesToRead)
         data_array = [b for b in out]
         print(data_array)
         # Example check: if the response is the echo of the command, confirm success
-        if bytesToRead == command_bytes:
+        if data_array == command_bytes:
             print("Command executed successfully.")
             return True
         else:
@@ -116,11 +114,13 @@ def setMixer2(ser, state):
         result = send_command_and_confirm(ser, mixer2_OFF)
         print("Mixer 2 OFF:", "Success" if result else "Failed")     
 
-def setMixer3(state):
-    if state == True:
-        ser.write(mixer3_ON)
+def setMixer3(ser, state):
+    if state:
+        result = send_command_and_confirm(ser, mixer3_ON)
+        print("Mixer 3 ON:", "Success" if result else "Failed")
     else:
-        ser.write(mixer3_OFF)
+        result = send_command_and_confirm(ser, mixer3_OFF)
+        print("Mixer 3 OFF:", "Success" if result else "Failed")  
 
 def setSelector1(state):
     if state == True:
