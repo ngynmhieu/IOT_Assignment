@@ -54,6 +54,7 @@ def runCycles(cycle, flow1, flow2, flow3, area, startTime, stopTime):
         if current_time >= startTime and current_time <= stopTime and cycle > 0:
             while True:
                 status = INIT
+                print("Running...")
                 flag = fsm_auto(flow1, flow2, flow3, area, client)
                 if flag == 1:
                     break
