@@ -109,15 +109,11 @@ def send_command_and_confirm(ser, command):
     ser.write(command_bytes)
 
     time.sleep(1)
-    if ser.inWaiting() > 0:
-        response = ser.read(ser.inWaiting())
-        if response == command_bytes:
-            print("Command executed successfully.")
-            return True
-        else:
-            print("Command execution failed.")
-    else:
-        print("No response from device.")
+    bytesToRead = ser.inWaiting()
+    if bytesToRead > 0:
+        out = ser.read(bytesToRead)
+        data_array = list(out)
+        print("Data array:", data_array)
 
     return False
 
