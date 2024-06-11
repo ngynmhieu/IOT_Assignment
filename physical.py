@@ -72,8 +72,8 @@ def readMoisture():
     return serial_read_data(ser)
 #test
 
-mixer1_ON  = [1, 5, 0, 0, 255, 0, 140, 58]
-mixer1_OFF = [1, 5, 0, 0, 0, 0, 205, 202]
+mixer1_ON  = [1, 6, 0, 0, 0, 255, 201, 138]
+mixer1_OFF = [1, 5, 0, 0, 0, 0, 137, 202]
 
 mixer2_ON  = [2, 5, 0, 0, 255, 0, 221, 250]
 mixer2_OFF = [2, 5, 0, 0, 0, 0, 156, 10]
