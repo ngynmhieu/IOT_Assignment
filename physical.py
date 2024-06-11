@@ -18,34 +18,6 @@ print(portName)
 if portName != "None":
     ser = serial.Serial(port=portName, baudrate=9600)
 
-# def compute_crc(data):
-#     crc = 0xFFFF
-#     for byte in data:
-#         crc ^= byte
-#         for _ in range(8):
-#             lsb = crc & 1
-#             crc >>= 1
-#             if lsb:
-#                 crc ^= 0xA001
-#     return crc
-
-# def correct_crc(array):
-#     data = array[:-2]
-#     high, low = array[-2:]
-
-#     crc = compute_crc(data)
-#     crc_low = (crc >> 8) & 0xFF
-#     crc_high = crc & 0xFF
-    
-
-#     if (crc_high == high and 
-#         crc_low == low):
-#         return array
-#     else:
-
-#         array_chuan = array[:-2] + [crc_high, crc_low]
-#         return array_chuan
-     
 def serial_read_data(ser):
     bytesToRead = ser.inWaiting()
     if bytesToRead > 0:
@@ -114,11 +86,11 @@ def send_command_and_confirm(ser, command):
     # Check if there are bytes to read
     bytesToRead = ser.inWaiting()
     if bytesToRead > 0:
-        response = ser.read(bytesToRead)
-        print("Response received:", response)
-
+        out = ser.read(bytesToRead)
+        data_array = [b for b in out]
+        print(data_array)
         # Example check: if the response is the echo of the command, confirm success
-        if response == command_bytes:
+        if bytesToRead == command_bytes:
             print("Command executed successfully.")
             return True
         else:
