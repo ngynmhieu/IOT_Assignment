@@ -8,7 +8,7 @@ from scheduler import *
 
 AIO_FEED_IDs = ["command", "announceUser", "deviceActive", "moist", "moist_predict", "temp", "temp_predict"]
 AIO_USERNAME = "IOT_232"
-AIO_KEY = "aio_tSwT46EEjpikgWpLqYMybCEe6js0"  
+AIO_KEY = ""  
 
 def connected(client):
     print("Ket noi thanh cong ...")
