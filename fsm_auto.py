@@ -57,7 +57,7 @@ def fsm_auto(flow1, flow2, flow3, area, client):
         if (end_time - start_time >= 5):
             start_time = time.time()
             print ("PUMP_IN")
-            setMixer3(ser, False)
+            setMixer3(False)
             setPump_in(True)
             status = PUMP_IN
             publish_deviceActive(4)

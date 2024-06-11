@@ -75,13 +75,13 @@ def setMixer1(state):
     else:
         ser.write(mixer1_OFF)
 
-def setMixer2(ser, state):
+def setMixer2(state):
     if state == True:
         ser.write(mixer2_ON)
     else:
         ser.write(mixer2_OFF)    
 
-def setMixer3(ser, state):
+def setMixer3(state):
     if state == True:
         ser.write(mixer3_ON)
     else:
