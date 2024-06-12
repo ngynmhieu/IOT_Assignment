@@ -47,7 +47,8 @@ def serial_read_response(ser):
     bytesToRead = ser.inWaiting()
     if bytesToRead > 0:
         response = ser.read(bytesToRead)
-        response_array = list(response) 
+        response_array = list(response)
+        print ("turn ON/OFF successfully")
         return response_array
     else:
         print("No response received.")
