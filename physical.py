@@ -42,6 +42,14 @@ def readMoisture():
     ser.write(soil_moisture)
     time.sleep(1)
     return serial_read_data(ser)
+
+def read_response(ser):
+    bytesToRead = ser.inWaiting()
+    if bytesToRead > 0:
+        response = ser.read(bytesToRead)
+        out = list(response)
+        print (out)
+    return []
 #test
 
 mixer1_ON  = [1, 6, 0, 0, 0, 255, 201, 138]
@@ -72,14 +80,21 @@ pumpout_OFF = [8, 6, 0, 0, 0, 0, 137, 83]
 def setMixer1(state):
     if state == True:
         ser.write(mixer1_ON)
+        print("MIX1_ON: ")
+        read_response(ser)
     else:
         ser.write(mixer1_OFF)
+        read_response(ser)
 
 def setMixer2(state):
     if state == True:
         ser.write(mixer2_ON)
+        print("MIX2_ON: ")
+        read_response(ser)
     else:
-        ser.write(mixer2_OFF)    
+        ser.write(mixer2_OFF) 
+        print("MIX2_OFF: ")
+        read_response(ser)   
 
 def setMixer3(state):
     if state == True:
