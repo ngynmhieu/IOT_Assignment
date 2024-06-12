@@ -2,13 +2,16 @@ import time
 import serial.tools.list_ports
 import queue
 import threading
+
 command_queue = queue.Queue()
 
 # Command type flags
 READING_SENSORS = 0
 CONTROLLING_DEVICE = 1
+
 last_valid_temperature = None
 last_valid_moisture = None
+
 def getPort():
     ports = serial.tools.list_ports.comports()
     N = len(ports)
@@ -31,7 +34,6 @@ if portName != "None":
 
 soil_temperature = [1, 3, 0, 6, 0, 1, 100, 11]
 soil_moisture = [1, 3, 0, 7, 0, 1, 53, 203]
-
 
 
 mixer1_ON  = [1, 6, 0, 0, 0, 255, 201, 138]
@@ -64,9 +66,8 @@ pumpout_OFF = [8, 6, 0, 0, 0, 0, 137, 83]
 def send_command(command, command_type):
     ser.write(command)
     command_queue.put(command_type)
-    time.sleep(1)  # Give some time for the device to respond
+    time.sleep(1)  
 
-# Improved function to handle serial responses
 def serial_read_response(ser):
     if not command_queue.empty():
         current_command_type = command_queue.get()
@@ -75,14 +76,14 @@ def serial_read_response(ser):
             response = ser.read(bytesToRead)
             response_array = list(response)
             if current_command_type == CONTROLLING_DEVICE:
-                return response_array[:6]  # Only relevant part for control commands
+                return response_array[:6] 
             elif current_command_type == READING_SENSORS:
-                return response_array  # Full response for sensor readings
+                return response_array  
         else:
             print("No response received.")
     return []
 
-# Example usage for a device control command
+
 def setMixer1(state):
     command = mixer1_ON if state else mixer1_OFF
     print(f"MIX1 {'ON' if state else 'OFF'}: ")
@@ -171,7 +172,7 @@ def setPump_out(state):
     else:
         print("Failed to control")
 
-# Example usage for a sensor read command
+
 def readTemperature():
     global last_valid_temperature
     send_command(soil_temperature, READING_SENSORS)
@@ -190,7 +191,7 @@ def readMoisture():
     if len(response) >= 7:
         value_bytes = response[3:5]
         value = int.from_bytes(value_bytes, byteorder='big')
-        last_valid_moisture = value  # Update the last valid moisture
+        last_valid_moisture = value 
         return value
     return last_valid_moisture if last_valid_moisture is not None else 0 
 
