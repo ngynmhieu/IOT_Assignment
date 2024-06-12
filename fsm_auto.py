@@ -22,9 +22,9 @@ def fsm_auto(flow1, flow2, flow3, area, client):
     if (status == INIT):
         publish_deviceActive(0)
         start_time = time.time()
-        print ("INIT")
+        #print ("INIT")
         status = MIX1
-        print ("MIX1")
+        #print ("MIX1")
         setMixer1(True)
         publish_deviceActive(1)
         
@@ -35,7 +35,7 @@ def fsm_auto(flow1, flow2, flow3, area, client):
         if (end_time - start_time >= 5):
             start_time = time.time()
             status = MIX2
-            print ("MIX2")
+            #print ("MIX2")
             setMixer1(False)
             setMixer2(True)
             publish_deviceActive(2)
@@ -46,7 +46,7 @@ def fsm_auto(flow1, flow2, flow3, area, client):
         if (end_time - start_time >= 5):
             start_time = time.time()
             status = MIX3
-            print ("MIX3")
+            #print ("MIX3")
             setMixer2(False)
             setMixer3(True)
             publish_deviceActive(3)
@@ -56,7 +56,7 @@ def fsm_auto(flow1, flow2, flow3, area, client):
         end_time = time.time()
         if (end_time - start_time >= 5):
             start_time = time.time()
-            print ("PUMP_IN")
+            #print ("PUMP_IN")
             setMixer3(False)
             setPump_in(True)
             status = PUMP_IN
@@ -70,22 +70,22 @@ def fsm_auto(flow1, flow2, flow3, area, client):
             setPump_in(False)
             status = SELECTOR
             if area == 1:
-                print ('SELECTOR1')
+                #print ('SELECTOR1')
                 setSelector1(True)
                 publish_deviceActive(5)
             elif area == 2:
-                print ('SELECTOR2')
+                #print ('SELECTOR2')
                 setSelector2(True)
                 publish_deviceActive(6)
             elif area == 3:
-                print ('SELECTOR3')
+                #print ('SELECTOR3')
                 setSelector3(True)
                 publish_deviceActive(7)
     elif (status == SELECTOR):
         # print ('SELECTOR')
         start_time = time.time()
         status = PUMP_OUT
-        print ('PUMP_OUT')
+        #print ('PUMP_OUT')
         setPump_out(True)
         setSelector1(False)
         setSelector2(False)
@@ -95,13 +95,13 @@ def fsm_auto(flow1, flow2, flow3, area, client):
     elif (status == PUMP_OUT):
         # print ('PUMP_OUT')
         start_time = time.time()
-        print ('NEXT_CYCLE')
+        #print ('NEXT_CYCLE')
         setPump_out(False)
         status = NEXT_CYCLE
         publish_deviceActive(9)
         
     elif (status == NEXT_CYCLE):
-        print ('INIT')
+        #print ('INIT')
         status = INIT
         publish_deviceActive(0)
         return 1
