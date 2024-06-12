@@ -48,8 +48,8 @@ def serial_read_response(ser):
     if bytesToRead > 0:
         response = ser.read(bytesToRead)
         response_array = list(response)
-        print ("turn ON/OFF successfully")
-        return response_array
+        print("Response received (excluding CRC):", response_array[:6])
+        return response_array[:6]
     else:
         print("No response received.")
     return []
@@ -83,26 +83,36 @@ pumpout_OFF = [8, 6, 0, 0, 0, 0, 137, 83]
 def setMixer1(state):
     if state == True:
         ser.write(mixer1_ON)
+        expected_response = mixer1_ON[:6]
         print("MIX1_ON: ")
         
     else:
         ser.write(mixer1_OFF)
+        expected_response = mixer1_ON[:6]
     time.sleep(1)
     array = serial_read_response(ser)
-    print(array)
+    if array == expected_response:
+        print("Succersfully control")
+    else:
+        print("Failed to control")
+
         
 
 def setMixer2(state):
     if state == True:
         ser.write(mixer2_ON)
+        expected_response = mixer2_ON[:6]
         print("MIX2_ON: ")
     else:
         ser.write(mixer2_OFF) 
         print("MIX2_OFF: ")
+        expected_response = mixer2_ON[:6]
     time.sleep(1)
     array = serial_read_response(ser)
-    print(array)
-
+    if array == expected_response:
+        print("Succersfully control")
+    else:
+        print("Failed to control")
 def setMixer3(state):
     if state == True:
         ser.write(mixer3_ON)
