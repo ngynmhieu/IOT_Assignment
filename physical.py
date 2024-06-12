@@ -7,6 +7,8 @@ command_queue = queue.Queue()
 # Command type flags
 READING_SENSORS = 0
 CONTROLLING_DEVICE = 1
+last_valid_temperature = None
+last_valid_moisture = None
 def getPort():
     ports = serial.tools.list_ports.comports()
     N = len(ports)
@@ -171,21 +173,24 @@ def setPump_out(state):
 
 # Example usage for a sensor read command
 def readTemperature():
+    global last_valid_temperature
     send_command(soil_temperature, READING_SENSORS)
     response = serial_read_response(ser)
     if len(response) >= 7:
         value_bytes = response[3:5]
         value = int.from_bytes(value_bytes, byteorder='big')
+        last_valid_temperature = value  
         return value
-    return -1
+    return last_valid_temperature if last_valid_temperature is not None else 0  
 
 def readMoisture():
+    global last_valid_moisture
     send_command(soil_moisture, READING_SENSORS)
     response = serial_read_response(ser)
     if len(response) >= 7:
         value_bytes = response[3:5]
         value = int.from_bytes(value_bytes, byteorder='big')
+        last_valid_moisture = value  # Update the last valid moisture
         return value
-    return -1
-
+    return last_valid_moisture if last_valid_moisture is not None else 0 
 
