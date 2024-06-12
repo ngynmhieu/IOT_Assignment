@@ -51,7 +51,7 @@ sending_count = 1
 def publish_announceUser (data):
     if is_publish_flag():
         set_publish_flag(False)
-        print ("Publishing announceUser ...")
+        #print ("Publishing announceUser ...")
         client.publish("announceUser", data)
         time.sleep(1)  # Add a delay
         set_publish_flag(True)
@@ -59,7 +59,7 @@ def publish_announceUser (data):
 def publish_deviceActive (data):
     if is_publish_flag():
         set_publish_flag(False)
-        print ("Publishing deviceActive ...")
+        #print ("Publishing deviceActive ...")
         client.publish("deviceActive", data)
         time.sleep(1)  # Add a delay
         set_publish_flag(True)
@@ -67,7 +67,7 @@ def publish_deviceActive (data):
 def publish_moist (data):
     if is_publish_flag():
         set_publish_flag(False)
-        print ("Publishing moist ...")
+        #print ("Publishing moist ...")
         client.publish("moist", data)
         time.sleep(3)  # Add a delay
         set_publish_flag(True)
@@ -75,7 +75,7 @@ def publish_moist (data):
 def publish_moist_predict (data):
     if is_publish_flag():
         set_publish_flag(False)
-        print  ("Publishing moist_predict ...")
+        #print  ("Publishing moist_predict ...")
         client.publish("moist_predict", data)
         time.sleep(3)  # Add a delay
         set_publish_flag(True)
@@ -83,7 +83,7 @@ def publish_moist_predict (data):
 def publish_temp (data):
     if is_publish_flag():
         set_publish_flag(False)
-        print ("Publishing temp ...")
+        #print ("Publishing temp ...")
         client.publish("temp", data)
         time.sleep(3)  # Add a delay
         set_publish_flag(True)
@@ -91,7 +91,7 @@ def publish_temp (data):
 def publish_temp_predict (data):
     if is_publish_flag():
         set_publish_flag(False)
-        print ("Publishing temp_predict ...")
+        #print ("Publishing temp_predict ...")
         client.publish("temp_predict", data)
         time.sleep(3)  # Add a delay
         set_publish_flag(True)

@@ -37,7 +37,7 @@ threading.Timer(1.0, timer_callback).start()
     
 def runCycles(cycle, flow1, flow2, flow3, area, startTime, stopTime):
     global client
-    print("Running cycle ...")
+    #print("Running cycle ...")
     startTime_obj = datetime.strptime(startTime, "%H:%M")
     stopTime_obj = datetime.strptime(stopTime, "%H:%M")
     # print (f'Cycle: {cycle}; Flow1: {flow1}; Flow2: {flow2}; Flow3: {flow3}; Area: {area}; Start time: {startTime}; Stop time: {stopTime}')
@@ -78,14 +78,14 @@ def listenSensor():
 
 def runCommand():
     if is_runCommand_flag():
-        print("Running command ...")
+        #print("Running command ...")
         cycleThread = threading.Thread(target=runCycles, args=(get_schedule('cycle'), get_schedule('flow1'), get_schedule('flow2'), get_schedule('flow3'), get_schedule('area'), get_schedule('startTime'), get_schedule('stopTime')))
         cycleThread.start()
         # print ('Start thread successfully')
         set_runCommand_flag(False)
 
 def prepare_model ():
-    print ("Preparing model ...")
+    #print ("Preparing model ...")
     global model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features
     model, in_seq1, in_seq2, out_seq, n_steps_in, n_steps_out, n_features = prepare_cnn_model(temp_value, moisture_value)
 
