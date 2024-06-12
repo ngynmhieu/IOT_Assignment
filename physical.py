@@ -48,7 +48,6 @@ def serial_read_response(ser):
     if bytesToRead > 0:
         response = ser.read(bytesToRead)
         response_array = list(response)
-        print("Response received (excluding CRC):", response_array[:6])
         return response_array[:6]
     else:
         print("No response received.")
@@ -106,7 +105,7 @@ def setMixer2(state):
     else:
         ser.write(mixer2_OFF) 
         print("MIX2_OFF: ")
-        expected_response = mixer2_ON[:6]
+        expected_response = mixer2_OFF[:6]
     time.sleep(1)
     array = serial_read_response(ser)
     if array == expected_response:
@@ -116,38 +115,98 @@ def setMixer2(state):
 def setMixer3(state):
     if state == True:
         ser.write(mixer3_ON)
+        expected_response = mixer3_ON[:6]
+        print("MIX3_ON: ")
     else:
         ser.write(mixer3_OFF) 
+        print("MIX3_OFF: ")
+        expected_response = mixer3_OFF[:6]
+    time.sleep(1)
+    array = serial_read_response(ser)
+    if array == expected_response:
+        print("Succersfully control")
+    else:
+        print("Failed to control")
 
 def setSelector1(state):
     if state == True:
         ser.write(selector1_ON)
+        expected_response = selector1_ON[:6]
+        print("selector1_ON: ")
     else:
-        ser.write(selector1_OFF)
+        ser.write(selector1_OFF) 
+        print("selector1_OFF: ")
+        expected_response = selector1_OFF[:6]
+    time.sleep(1)
+    array = serial_read_response(ser)
+    if array == expected_response:
+        print("Succersfully control")
+    else:
+        print("Failed to control")
 
 def setSelector2(state):
     if state == True:
         ser.write(selector2_ON)
+        expected_response = selector2_ON[:6]
+        print("selector2_ON: ")
     else:
-        ser.write(selector2_OFF)
+        ser.write(selector1_OFF) 
+        print("selector2_OFF: ")
+        expected_response = selector2_OFF[:6]
+    time.sleep(1)
+    array = serial_read_response(ser)
+    if array == expected_response:
+        print("Succersfully control")
+    else:
+        print("Failed to control")
 
 def setSelector3(state):
     if state == True:
         ser.write(selector3_ON)
+        expected_response = selector3_ON[:6]
+        print("selector3_ON: ")
     else:
-        ser.write(selector3_OFF)
+        ser.write(selector3_OFF) 
+        print("selector3_OFF: ")
+        expected_response = selector3_OFF[:6]
+    time.sleep(1)
+    array = serial_read_response(ser)
+    if array == expected_response:
+        print("Succersfully control")
+    else:
+        print("Failed to control")
 
 def setPump_in(state):
     if state == True:
         ser.write(pumpin_ON)
+        expected_response = pumpin_ON[:6]
+        print("pumpin_ON: ")
     else:
-        ser.write(pumpin_OFF)
+        ser.write(pumpin_OFF) 
+        print("pumpin_OFF: ")
+        expected_response = pumpin_OFF[:6]
+    time.sleep(1)
+    array = serial_read_response(ser)
+    if array == expected_response:
+        print("Succersfully control")
+    else:
+        print("Failed to control")
 
 def setPump_out(state):
     if state == True:
         ser.write(pumpout_ON)
+        expected_response = pumpout_ON[:6]
+        print("pumpout_ON: ")
     else:
-        ser.write(pumpout_OFF)
+        ser.write(pumpout_OFF) 
+        print("pumpout_OFF: ")
+        expected_response = pumpout_OFF[:6]
+    time.sleep(1)
+    array = serial_read_response(ser)
+    if array == expected_response:
+        print("Succersfully control")
+    else:
+        print("Failed to control")
         
 
 
