@@ -1,5 +1,12 @@
 import time
 import serial.tools.list_ports
+import queue
+import threading
+command_queue = queue.Queue()
+
+# Command type flags
+READING_SENSORS = 0
+CONTROLLING_DEVICE = 1
 def getPort():
     ports = serial.tools.list_ports.comports()
     N = len(ports)
@@ -18,41 +25,12 @@ print(portName)
 if portName != "None":
     ser = serial.Serial(port=portName, baudrate=9600)
 
-def serial_read_data(ser):
-    bytesToRead = ser.inWaiting()
-    if bytesToRead > 0:
-        out = ser.read(bytesToRead)
-        data_array = list(out)
-        if len(data_array) >= 7:
-            value_bytes = data_array[3:5]  
-            value = int.from_bytes(value_bytes, byteorder='big') 
-            return value
-        else:
-            return -1  
-    return 0  
+
 
 soil_temperature = [1, 3, 0, 6, 0, 1, 100, 11]
-def readTemperature():
-    ser.write(soil_temperature)
-    time.sleep(1)
-    return serial_read_data(ser)
-
 soil_moisture = [1, 3, 0, 7, 0, 1, 53, 203]
-def readMoisture():
-    ser.write(soil_moisture)
-    time.sleep(1)
-    return serial_read_data(ser)
 
-def serial_read_response(ser):
-    bytesToRead = ser.inWaiting()
-    if bytesToRead > 0:
-        response = ser.read(bytesToRead)
-        response_array = list(response)
-        return response_array[:6]
-    else:
-        print("No response received.")
-    return []
-#test
+
 
 mixer1_ON  = [1, 6, 0, 0, 0, 255, 201, 138]
 mixer1_OFF = [1, 6, 0, 0, 0, 0, 137, 202]
@@ -79,136 +57,135 @@ pumpout_ON  = [8, 6, 0, 0, 0, 255, 201, 19]
 pumpout_OFF = [8, 6, 0, 0, 0, 0, 137, 83]
 
  
+
+
+def send_command(command, command_type):
+    ser.write(command)
+    command_queue.put(command_type)
+    time.sleep(1)  # Give some time for the device to respond
+
+# Improved function to handle serial responses
+def serial_read_response(ser):
+    if not command_queue.empty():
+        current_command_type = command_queue.get()
+        bytesToRead = ser.inWaiting()
+        if bytesToRead > 0:
+            response = ser.read(bytesToRead)
+            response_array = list(response)
+            if current_command_type == CONTROLLING_DEVICE:
+                return response_array[:6]  # Only relevant part for control commands
+            elif current_command_type == READING_SENSORS:
+                return response_array  # Full response for sensor readings
+        else:
+            print("No response received.")
+    return []
+
+# Example usage for a device control command
 def setMixer1(state):
-    if state == True:
-        ser.write(mixer1_ON)
-        expected_response = mixer1_ON[:6]
-        print("MIX1_ON: ")
-        
-    else:
-        ser.write(mixer1_OFF)
-        expected_response = mixer1_ON[:6]
-    time.sleep(1)
-    array = serial_read_response(ser)
-    if array == expected_response:
-        print("Succersfully control")
+    command = mixer1_ON if state else mixer1_OFF
+    print(f"MIX1 {'ON' if state else 'OFF'}: ")
+    send_command(command, CONTROLLING_DEVICE)
+    response = serial_read_response(ser)
+    expected_response = command[:6]
+    if response == expected_response:
+        print("Successfully controlled")
     else:
         print("Failed to control")
-
-        
 
 def setMixer2(state):
-    if state == True:
-        ser.write(mixer2_ON)
-        expected_response = mixer2_ON[:6]
-        print("MIX2_ON: ")
-    else:
-        ser.write(mixer2_OFF) 
-        print("MIX2_OFF: ")
-        expected_response = mixer2_OFF[:6]
-    time.sleep(1)
-    array = serial_read_response(ser)
-    if array == expected_response:
-        print("Succersfully control")
+    command = mixer2_ON if state else mixer2_OFF
+    print(f"MIX2 {'ON' if state else 'OFF'}: ")
+    send_command(command, CONTROLLING_DEVICE)
+    response = serial_read_response(ser)
+    expected_response = command[:6]
+    if response == expected_response:
+        print("Successfully controlled")
     else:
         print("Failed to control")
+
 def setMixer3(state):
-    if state == True:
-        ser.write(mixer3_ON)
-        expected_response = mixer3_ON[:6]
-        print("MIX3_ON: ")
-    else:
-        ser.write(mixer3_OFF) 
-        print("MIX3_OFF: ")
-        expected_response = mixer3_OFF[:6]
-    time.sleep(1)
-    array = serial_read_response(ser)
-    if array == expected_response:
-        print("Succersfully control")
+    command = mixer3_ON if state else mixer3_OFF
+    print(f"MIX3 {'ON' if state else 'OFF'}: ")
+    send_command(command, CONTROLLING_DEVICE)
+    response = serial_read_response(ser)
+    expected_response = command[:6]
+    if response == expected_response:
+        print("Successfully controlled")
     else:
         print("Failed to control")
 
 def setSelector1(state):
-    if state == True:
-        ser.write(selector1_ON)
-        expected_response = selector1_ON[:6]
-        print("selector1_ON: ")
-    else:
-        ser.write(selector1_OFF) 
-        print("selector1_OFF: ")
-        expected_response = selector1_OFF[:6]
-    time.sleep(1)
-    array = serial_read_response(ser)
-    if array == expected_response:
-        print("Succersfully control")
+    command = selector1_ON if state else selector1_OFF
+    print(f"Selector1 {'ON' if state else 'OFF'}: ")
+    send_command(command, CONTROLLING_DEVICE)
+    response = serial_read_response(ser)
+    expected_response = command[:6]
+    if response == expected_response:
+        print("Successfully controlled")
     else:
         print("Failed to control")
 
 def setSelector2(state):
-    if state == True:
-        ser.write(selector2_ON)
-        expected_response = selector2_ON[:6]
-        print("selector2_ON: ")
-    else:
-        ser.write(selector1_OFF) 
-        print("selector2_OFF: ")
-        expected_response = selector2_OFF[:6]
-    time.sleep(1)
-    array = serial_read_response(ser)
-    if array == expected_response:
-        print("Succersfully control")
+    command = selector2_ON if state else selector2_OFF
+    print(f"Selector2 {'ON' if state else 'OFF'}: ")
+    send_command(command, CONTROLLING_DEVICE)
+    response = serial_read_response(ser)
+    expected_response = command[:6]
+    if response == expected_response:
+        print("Successfully controlled")
     else:
         print("Failed to control")
 
 def setSelector3(state):
-    if state == True:
-        ser.write(selector3_ON)
-        expected_response = selector3_ON[:6]
-        print("selector3_ON: ")
-    else:
-        ser.write(selector3_OFF) 
-        print("selector3_OFF: ")
-        expected_response = selector3_OFF[:6]
-    time.sleep(1)
-    array = serial_read_response(ser)
-    if array == expected_response:
-        print("Succersfully control")
+    command = selector3_ON if state else selector3_OFF
+    print(f"Selector3 {'ON' if state else 'OFF'}: ")
+    send_command(command, CONTROLLING_DEVICE)
+    response = serial_read_response(ser)
+    expected_response = command[:6]
+    if response == expected_response:
+        print("Successfully controlled")
     else:
         print("Failed to control")
 
 def setPump_in(state):
-    if state == True:
-        ser.write(pumpin_ON)
-        expected_response = pumpin_ON[:6]
-        print("pumpin_ON: ")
-    else:
-        ser.write(pumpin_OFF) 
-        print("pumpin_OFF: ")
-        expected_response = pumpin_OFF[:6]
-    time.sleep(1)
-    array = serial_read_response(ser)
-    if array == expected_response:
-        print("Succersfully control")
+    command = pumpin_ON if state else pumpin_OFF
+    print(f"Pump In {'ON' if state else 'OFF'}: ")
+    send_command(command, CONTROLLING_DEVICE)
+    response = serial_read_response(ser)
+    expected_response = command[:6]
+    if response == expected_response:
+        print("Successfully controlled")
     else:
         print("Failed to control")
 
 def setPump_out(state):
-    if state == True:
-        ser.write(pumpout_ON)
-        expected_response = pumpout_ON[:6]
-        print("pumpout_ON: ")
-    else:
-        ser.write(pumpout_OFF) 
-        print("pumpout_OFF: ")
-        expected_response = pumpout_OFF[:6]
-    time.sleep(1)
-    array = serial_read_response(ser)
-    if array == expected_response:
-        print("Succersfully control")
+    command = pumpout_ON if state else pumpout_OFF
+    print(f"Pump Out {'ON' if state else 'OFF'}: ")
+    send_command(command, CONTROLLING_DEVICE)
+    response = serial_read_response(ser)
+    expected_response = command[:6]
+    if response == expected_response:
+        print("Successfully controlled")
     else:
         print("Failed to control")
-        
 
+# Example usage for a sensor read command
+def readTemperature():
+    send_command(soil_temperature, READING_SENSORS)
+    response = serial_read_response(ser)
+    if len(response) >= 7:
+        value_bytes = response[3:5]
+        value = int.from_bytes(value_bytes, byteorder='big')
+        return value
+    return -1
 
+def readMoisture():
+    send_command(soil_moisture, READING_SENSORS)
+    response = serial_read_response(ser)
+    if len(response) >= 7:
+        value_bytes = response[3:5]
+        value = int.from_bytes(value_bytes, byteorder='big')
+        return value
+    return -1
 
 
