@@ -70,7 +70,9 @@ def listenSensor():
     # temp_value = random.randint(20, 40)
     # moisture_value = random.randint(30, 80)
     temp_value = readTemperature()/100
+    print("Temperature:", temp_value )
     moisture_value = readMoisture()
+    print("Moisture:", moisture_value )
     # client.publish("temp", temp_value)
     # client.publish("moist", moisture_value)
     publish_temp(temp_value)
